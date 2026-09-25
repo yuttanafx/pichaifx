@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import CandlestickBackground from "@/components/CandlestickBackground";
+import RobotTrader from "@/components/RobotTrader";
 
 // Runs before React hydrates so the site never flashes the wrong theme.
 // Default theme is "dark" (night); we only need to act when the visitor
@@ -61,6 +62,7 @@ export default function RootLayout({
       <body className="font-body antialiased" suppressHydrationWarning>
         <CandlestickBackground />
         {children}
+        <RobotTrader />
       </body>
     </html>
   );

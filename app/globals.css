@@ -193,3 +193,128 @@ summary:focus-visible {
     transform: translateX(-50%);
   }
 }
+
+/* ============ ROBOT TRADER MASCOT ============ */
+.robot-mascot {
+  position: fixed;
+  right: clamp(12px, 3vw, 32px);
+  bottom: clamp(12px, 3vw, 32px);
+  z-index: 40;
+  width: clamp(84px, 11vw, 140px);
+  pointer-events: none;
+  animation: robot-float 4.5s ease-in-out infinite;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
+}
+
+.robot-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .robot-mascot {
+    width: clamp(64px, 20vw, 84px);
+    right: 10px;
+    bottom: 10px;
+  }
+}
+
+@keyframes robot-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.robot-antenna-dot {
+  animation: robot-pulse 1.6s ease-in-out infinite;
+  transform-origin: 80px 8px;
+}
+
+.robot-eyes circle {
+  animation: robot-blink-eyes 4.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.robot-eyes circle:last-child {
+  animation-delay: 0.08s;
+}
+
+.robot-blink {
+  animation: robot-pulse 1.1s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.robot-blink-slow {
+  animation: robot-pulse 2.4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes robot-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes robot-blink-eyes {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.15);
+  }
+}
+
+.robot-ticker {
+  animation: robot-ticker-scroll 6s linear infinite;
+}
+
+@keyframes robot-ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-204px);
+  }
+}
+
+.robot-arm-left {
+  animation: robot-arm-left 2.6s ease-in-out infinite;
+  transform-origin: 22px 109px;
+}
+
+.robot-arm-right {
+  animation: robot-arm-right 2.6s ease-in-out infinite;
+  animation-delay: 0.4s;
+  transform-origin: 138px 109px;
+}
+
+@keyframes robot-arm-left {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-14deg);
+  }
+}
+
+@keyframes robot-arm-right {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(14deg);
+  }
+}
