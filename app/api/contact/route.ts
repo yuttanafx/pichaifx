@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 export const runtime = "nodejs";
 
@@ -42,40 +42,24 @@ export async function POST(request: Request) {
     );
   }
 
-  const {
-    SMTP_HOST,
-    SMTP_PORT,
-    SMTP_USER,
-    SMTP_PASS,
-    SMTP_SECURE,
-    CONTACT_TO_EMAIL,
-    CONTACT_FROM_EMAIL,
-  } = process.env;
+  const { RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL } = process.env;
 
-  if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS || !CONTACT_TO_EMAIL) {
+  if (!RESEND_API_KEY || !CONTACT_TO_EMAIL || !CONTACT_FROM_EMAIL) {
     console.error(
-      "Missing SMTP configuration. Please set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_TO_EMAIL in .env.local"
+      "Missing Resend configuration. Please set RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL in .env.local"
     );
     return NextResponse.json(
       {
         ok: false,
         error:
-          "เซิร์ฟเวอร์ยังไม่ได้ตั้งค่าอีเมล กรุณาติดต่อผู้ดูแลระบบให้ตั้งค่า SMTP ในไฟล์ .env.local",
+          "เซิร์ฟเวอร์ยังไม่ได้ตั้งค่าอีเมล กรุณาติดต่อผู้ดูแลระบบให้ตั้งค่า Resend ในไฟล์ .env.local",
       },
       { status: 500 }
     );
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: Number(SMTP_PORT),
-      secure: SMTP_SECURE ? SMTP_SECURE === "true" : Number(SMTP_PORT) === 465,
-      auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS,
-      },
-    });
+    const resend = new Resend(RESEND_API_KEY);
 
     const safe = {
       name: escapeHtml(name.trim()),
@@ -112,14 +96,21 @@ export async function POST(request: Request) {
       `ข้อความเพิ่มเติม: ${note?.trim() || "-"}`,
     ].join("\n");
 
-    await transporter.sendMail({
-      from: CONTACT_FROM_EMAIL || SMTP_USER,
+    const { error } = await resend.emails.send({
+      from: CONTACT_FROM_EMAIL,
       to: CONTACT_TO_EMAIL,
-      replyTo: SMTP_USER,
       subject: `แจ้งบัญชีเทรดใหม่จาก ${name}`,
       text,
       html,
     });
+
+    if (error) {
+      console.error("Resend API error:", error);
+      return NextResponse.json(
+        { ok: false, error: "ส่งอีเมลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {
