@@ -5,7 +5,8 @@ import { useState } from "react";
 const brokers = ["Exness", "XM", "IC Markets", "FBS", "Pepperstone", "อื่น ๆ"];
 
 export default function ConnectAccount() {
-  const [status, setStatus] = useState<"idle" | "submitted">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "submitted" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [form, setForm] = useState({
     name: "",
     contact: "",
@@ -25,10 +26,33 @@ export default function ConnectAccount() {
     form.accountNumber.trim() &&
     form.server.trim();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
-    setStatus("submitted");
+    if (!canSubmit || status === "loading") return;
+
+    setStatus("loading");
+    setErrorMessage("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        setStatus("error");
+        setErrorMessage(data.error || "ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+        return;
+      }
+
+      setStatus("submitted");
+    } catch {
+      setStatus("error");
+      setErrorMessage("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่อีกครั้ง");
+    }
   };
 
   return (
@@ -189,12 +213,18 @@ export default function ConnectAccount() {
                   />
                 </div>
 
+                {status === "error" && (
+                  <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3.5 py-2.5 text-sm text-red-400">
+                    {errorMessage}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  disabled={!canSubmit}
+                  disabled={!canSubmit || status === "loading"}
                   className="mt-1 rounded-md bg-cyan py-3.5 text-sm font-medium text-ink transition-transform enabled:hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  ส่งข้อมูลให้แอดมิน
+                  {status === "loading" ? "กำลังส่งข้อมูล..." : "ส่งข้อมูลให้แอดมิน"}
                 </button>
               </form>
             )}

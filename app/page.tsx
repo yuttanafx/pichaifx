@@ -4,6 +4,7 @@ import TrustBar from "@/components/TrustBar";
 import Performance from "@/components/Performance";
 import Products from "@/components/Products";
 import HowItWorks from "@/components/HowItWorks";
+import EADownload from "@/components/EADownload";
 import ConnectAccount from "@/components/ConnectAccount";
 import CopyTrading from "@/components/CopyTrading";
 import LiveMarket from "@/components/LiveMarket";
@@ -22,6 +23,7 @@ export default function Home() {
       <Performance />
       <Products />
       <HowItWorks />
+      <EADownload />
       <ConnectAccount />
       <CopyTrading />
       <LiveMarket />

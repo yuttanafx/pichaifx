@@ -7,6 +7,7 @@ const links = [
   { href: "#platform", label: "แพลตฟอร์ม" },
   { href: "#products", label: "โปรดักต์" },
   { href: "#performance", label: "ผลการเทรด" },
+  { href: "#ea-download", label: "EA เทรด" },
   { href: "#connect-account", label: "แจ้งบัญชีเทรด" },
   { href: "#academy", label: "อคาเดมี" },
   { href: "#pricing", label: "แพ็กเกจ" },

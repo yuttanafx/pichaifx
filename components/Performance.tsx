@@ -23,13 +23,17 @@ export default function Performance() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href="#"
+                href="https://www.myfxbook.com/members/yuttanafx/gold-grid/12220131"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-md border border-line px-5 py-3 text-sm font-medium text-paper hover:border-cyan/40 hover:bg-panel"
               >
                 เปิดดู Myfxbook
               </a>
               <a
-                href="#"
+                href="https://www.myfxbook.com/members/yuttanafx"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-md border border-line px-5 py-3 text-sm font-medium text-paper hover:border-cyan/40 hover:bg-panel"
               >
                 ประวัติการเทรดทั้งหมด
