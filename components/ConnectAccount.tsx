@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const brokers = ["Exness", "XM", "IC Markets", "FBS", "Pepperstone", "อื่น ๆ"];
+const brokers = ["OEXN", "Exness", "XM", "IC Markets", "FBS", "Pepperstone", "อื่น ๆ"];
 
 export default function ConnectAccount() {
   const [status, setStatus] = useState<"idle" | "loading" | "submitted" | "error">("idle");

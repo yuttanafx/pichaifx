@@ -1,3 +1,5 @@
+const BROKER_SIGNUP_URL = "http://live.oexn.global/signup/xtAKY577";
+
 const plans = [
   {
     name: "Starter",
@@ -5,7 +7,10 @@ const plans = [
     price: "ฟรี",
     period: "",
     features: ["EA License พื้นฐาน 1 บัญชี", "Support ผ่าน Community", "อัปเดตกลยุทธ์รายเดือน"],
-    cta: "เริ่มต้นใช้งาน",
+    cta: "สมัครใช้ฟรี 1 บัญชี",
+    href: BROKER_SIGNUP_URL,
+    external: true,
+    sponsored: true,
     featured: false,
   },
   {
@@ -20,6 +25,9 @@ const plans = [
       "Support ผ่าน LINE ส่วนตัว",
     ],
     cta: "เลือกแพ็กเกจนี้",
+    href: "#contact",
+    external: false,
+    sponsored: false,
     featured: true,
   },
   {
@@ -29,6 +37,9 @@ const plans = [
     period: "",
     features: ["บริหารพอร์ตโดยทีมงาน", "รายงานผลรายสัปดาห์", "ปรับกลยุทธ์ตามความเสี่ยงของคุณ"],
     cta: "ติดต่อเรา",
+    href: "#contact",
+    external: false,
+    sponsored: false,
     featured: false,
   },
 ];
@@ -83,7 +94,8 @@ export default function Pricing() {
               </ul>
 
               <a
-                href="#contact"
+                href={p.href}
+                {...(p.external ? { target: "_blank", rel: "noopener noreferrer sponsored" } : {})}
                 className={`mt-8 rounded-md py-3 text-center text-sm font-medium transition-transform hover:scale-[1.02] ${
                   p.featured
                     ? "bg-cyan text-ink"
@@ -92,6 +104,22 @@ export default function Pricing() {
               >
                 {p.cta}
               </a>
+
+              {p.sponsored && (
+                <a
+                  href={BROKER_SIGNUP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer sponsored"
+                  className="mt-4 flex items-center justify-between gap-3 rounded-md border border-line bg-panel2 px-3.5 py-2.5 transition-colors hover:border-cyan/40"
+                >
+                  <span className="text-[11px] uppercase tracking-wide text-dim">
+                    ผู้สนับสนุน
+                  </span>
+                  <span className="font-display text-sm font-semibold tracking-wide text-paper">
+                    OEXN<span className="text-cyan">.</span>
+                  </span>
+                </a>
+              )}
             </div>
           ))}
         </div>
