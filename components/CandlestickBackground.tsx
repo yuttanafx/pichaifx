@@ -18,8 +18,8 @@ type Candle = {
   wickBottom: number;
 };
 
-const BAND_HEIGHT = 240; // px, height of the ticker-style band
-const CANDLE_COUNT = 48;
+const BAND_HEIGHT = 420; // px, height of the ticker-style band
+const CANDLE_COUNT = 40;
 
 function generateCandles(count: number, seed: number): Candle[] {
   const rand = mulberry32(seed);
@@ -47,13 +47,13 @@ const CANDLES = generateCandles(CANDLE_COUNT, 20260925);
 function CandleColumn({ candle, index }: { candle: Candle; index: number }) {
   const colorClass = candle.up ? "bg-mint" : "bg-rose";
   return (
-    <div className="relative h-full w-[10px] flex-shrink-0" aria-hidden="true">
+    <div className="relative h-full w-[18px] flex-shrink-0" aria-hidden="true">
       <span
-        className={`absolute left-1/2 w-px -translate-x-1/2 ${colorClass}`}
+        className={`absolute left-1/2 w-[2px] -translate-x-1/2 ${colorClass}`}
         style={{ height: candle.wickHeight, bottom: candle.wickBottom }}
       />
       <span
-        className={`absolute left-1/2 w-[6px] -translate-x-1/2 rounded-[1px] ${colorClass}`}
+        className={`absolute left-1/2 w-[12px] -translate-x-1/2 rounded-[2px] ${colorClass}`}
         style={{ height: candle.bodyHeight, bottom: candle.bodyBottom }}
       />
     </div>
@@ -68,7 +68,7 @@ export default function CandlestickBackground() {
     <div className="candle-layer" aria-hidden="true">
       <div
         className="candle-track"
-        style={{ height: BAND_HEIGHT, gap: "10px", paddingInline: "5px" }}
+        style={{ height: BAND_HEIGHT, gap: "16px", paddingInline: "8px" }}
       >
         {loop.map((c, i) => (
           <CandleColumn candle={c} index={i} key={i} />

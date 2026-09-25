@@ -31,7 +31,7 @@
   --scrollbar-thumb: #1c2733;
   --scrollbar-thumb-hover: #26333f;
 
-  --candle-opacity: 0.22;
+  --candle-opacity: 0.45;
 }
 
 /* Day */
@@ -59,7 +59,7 @@
   --scrollbar-thumb: #cdd4de;
   --scrollbar-thumb-hover: #b4bdc9;
 
-  --candle-opacity: 0.14;
+  --candle-opacity: 0.28;
 }
 
 * {
