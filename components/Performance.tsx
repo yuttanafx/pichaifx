@@ -17,7 +17,7 @@ export default function Performance() {
               จริง ไม่ใช่คำโฆษณา
             </h2>
             <p className="mt-5 max-w-md leading-relaxed text-dim">
-              บัญชีทุกตัวของ ASTO QUANT เชื่อมกับ Myfxbook เพื่อให้คุณตรวจสอบ
+              บัญชีทุกตัวของ PichaiFX Autotrad เชื่อมกับ Myfxbook เพื่อให้คุณตรวจสอบ
               ผลตอบแทน ความเสี่ยง และประวัติการเทรดได้ตลอดเวลา
               เราแยกผลการดำเนินงานจริงออกจากการคาดการณ์อย่างชัดเจน
             </p>

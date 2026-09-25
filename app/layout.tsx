@@ -1,6 +1,21 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import CandlestickBackground from "@/components/CandlestickBackground";
+
+// Runs before React hydrates so the site never flashes the wrong theme.
+// Default theme is "dark" (night); we only need to act when the visitor
+// previously chose "light" (day).
+const themeInitScript = `
+(function () {
+  try {
+    var saved = localStorage.getItem("asto-theme");
+    if (saved === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  } catch (e) {}
+})();
+`;
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,9 +38,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ASTO QUANT — ระบบเทรดอัตโนมัติสำหรับ MT4/MT5",
+  title: "PichaiFX Autotrad — ระบบเทรดอัตโนมัติสำหรับ MT4/MT5",
   description:
-    "ASTO QUANT คือแพลตฟอร์มเทคโนโลยีการเทรดอัตโนมัติ ครบทั้ง EA, Copy Trading และการวิเคราะห์ตลาดแบบเรียลไทม์ รองรับ MT4 และ MT5",
+    "PichaiFX Autotrad คือแพลตฟอร์มเทคโนโลยีการเทรดอัตโนมัติ ครบทั้ง EA, Copy Trading และการวิเคราะห์ตลาดแบบเรียลไทม์ รองรับ MT4 และ MT5",
 };
 
 export default function RootLayout({
@@ -34,8 +49,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="th" className={`${inter.variable} ${spaceGrotesk.variable} ${plexMono.variable}`}>
-      <body className="font-body antialiased">{children}</body>
+    <html
+      lang="th"
+      suppressHydrationWarning
+      className={`${inter.variable} ${spaceGrotesk.variable} ${plexMono.variable}`}
+    >
+      <head>
+        {/* eslint-disable-next-line react/no-danger */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="font-body antialiased" suppressHydrationWarning>
+        <CandlestickBackground />
+        {children}
+      </body>
     </html>
   );
 }

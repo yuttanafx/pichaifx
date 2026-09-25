@@ -8,16 +8,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#05070B",
-        panel: "#0B111A",
-        panel2: "#0E1622",
-        line: "rgba(255,255,255,0.07)",
-        cyan: "#00E5FF",
-        blue: "#4169FF",
-        mint: "#00FF9C",
-        rose: "#FF5C7A",
-        paper: "#F5F7FA",
-        dim: "#7D8998",
+        // stored as "r g b" CSS variables so Tailwind's opacity modifiers
+        // (e.g. bg-cyan/10) keep working while the values swap per theme
+        ink: "rgb(var(--color-ink) / <alpha-value>)",
+        panel: "rgb(var(--color-panel) / <alpha-value>)",
+        panel2: "rgb(var(--color-panel-2) / <alpha-value>)",
+        line: "var(--color-line)",
+        cyan: "rgb(var(--color-cyan) / <alpha-value>)",
+        blue: "rgb(var(--color-blue) / <alpha-value>)",
+        mint: "rgb(var(--color-mint) / <alpha-value>)",
+        rose: "rgb(var(--color-rose) / <alpha-value>)",
+        paper: "rgb(var(--color-paper) / <alpha-value>)",
+        dim: "rgb(var(--color-dim) / <alpha-value>)",
       },
       fontFamily: {
         display: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
@@ -26,12 +28,12 @@ const config: Config = {
       },
       backgroundImage: {
         grid:
-          "linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)",
+          "linear-gradient(var(--color-grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px)",
         "fade-cyan":
-          "radial-gradient(60% 60% at 50% 0%, rgba(0,229,255,0.16) 0%, rgba(0,229,255,0) 70%)",
+          "radial-gradient(60% 60% at 50% 0%, var(--color-hero-fade) 0%, rgba(0,0,0,0) 70%)",
       },
       boxShadow: {
-        glow: "0 0 0 1px rgba(0,229,255,0.15), 0 0 40px rgba(0,229,255,0.08)",
+        glow: "var(--shadow-glow)",
       },
     },
   },

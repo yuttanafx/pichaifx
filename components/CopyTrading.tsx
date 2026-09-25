@@ -1,6 +1,6 @@
 const strategies = [
   {
-    name: "ASTO Gold",
+    name: "PichaiFX Gold",
     focus: "XAUUSD Trend Following",
     ret: "+18.4%",
     dd: "6.2%",
@@ -8,7 +8,7 @@ const strategies = [
     followers: "482",
   },
   {
-    name: "ASTO Quant Grid",
+    name: "PichaiFX Grid",
     focus: "Multi-pair Grid System",
     ret: "+11.9%",
     dd: "4.8%",
@@ -16,7 +16,7 @@ const strategies = [
     followers: "310",
   },
   {
-    name: "ASTO Momentum",
+    name: "PichaiFX Momentum",
     focus: "BTCUSD / ETHUSD",
     ret: "+27.1%",
     dd: "12.4%",

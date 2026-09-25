@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 const links = [
   { href: "#platform", label: "แพลตฟอร์ม" },
   { href: "#products", label: "โปรดักต์" },
   { href: "#performance", label: "ผลการเทรด" },
-  { href: "#copy-trading", label: "Copy Trading" },
+  { href: "#connect-account", label: "แจ้งบัญชีเทรด" },
   { href: "#academy", label: "อคาเดมี" },
   { href: "#pricing", label: "แพ็กเกจ" },
 ];
@@ -34,7 +35,7 @@ export default function Navbar() {
             <span className="h-2.5 w-2.5 rounded-sm bg-cyan" />
           </span>
           <span className="font-display text-[15px] font-semibold tracking-wide text-paper">
-            ASTO QUANT
+            PichaiFX Autotrad
           </span>
         </a>
 
@@ -51,8 +52,9 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <ThemeToggle />
           <a
-            href="#login"
+            href="#connect-account"
             className="text-sm text-dim transition-colors hover:text-paper"
           >
             เข้าสู่ระบบ
@@ -65,18 +67,21 @@ export default function Navbar() {
           </a>
         </div>
 
-        <button
-          aria-label="เปิดเมนู"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="grid h-9 w-9 place-items-center rounded-md border border-line lg:hidden"
-        >
-          <div className="flex flex-col gap-[5px]">
-            <span className="h-[1.5px] w-4 bg-paper" />
-            <span className="h-[1.5px] w-4 bg-paper" />
-            <span className="h-[1.5px] w-4 bg-paper" />
-          </div>
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
+          <button
+            aria-label="เปิดเมนู"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="grid h-9 w-9 place-items-center rounded-md border border-line"
+          >
+            <div className="flex flex-col gap-[5px]">
+              <span className="h-[1.5px] w-4 bg-paper" />
+              <span className="h-[1.5px] w-4 bg-paper" />
+              <span className="h-[1.5px] w-4 bg-paper" />
+            </div>
+          </button>
+        </div>
       </div>
 
       {open && (

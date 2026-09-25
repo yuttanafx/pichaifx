@@ -4,6 +4,7 @@ import TrustBar from "@/components/TrustBar";
 import Performance from "@/components/Performance";
 import Products from "@/components/Products";
 import HowItWorks from "@/components/HowItWorks";
+import ConnectAccount from "@/components/ConnectAccount";
 import CopyTrading from "@/components/CopyTrading";
 import LiveMarket from "@/components/LiveMarket";
 import Pricing from "@/components/Pricing";
@@ -14,13 +15,14 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-ink">
+    <main className="relative min-h-screen">
       <Navbar />
       <Hero />
       <TrustBar />
       <Performance />
       <Products />
       <HowItWorks />
+      <ConnectAccount />
       <CopyTrading />
       <LiveMarket />
       <Pricing />

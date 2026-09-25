@@ -2,8 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============ THEME TOKENS ============ */
+/* Night (default). Values are "R G B" triplets so Tailwind's opacity
+   utilities (bg-cyan/10, bg-ink/85, ...) keep working; --color-line,
+   --color-grid-line, --color-hero-fade and --shadow-glow are full,
+   ready-to-use CSS values. */
 :root {
   color-scheme: dark;
+
+  --color-ink: 5 7 11;
+  --color-panel: 11 17 26;
+  --color-panel-2: 14 22 34;
+  --color-line: rgba(255, 255, 255, 0.08);
+
+  --color-cyan: 0 229 255;
+  --color-blue: 65 105 255;
+  --color-mint: 0 255 156;
+  --color-rose: 255 92 122;
+
+  --color-paper: 245 247 250;
+  --color-dim: 125 137 152;
+
+  --color-grid-line: rgba(255, 255, 255, 0.035);
+  --color-hero-fade: rgba(0, 229, 255, 0.16);
+  --shadow-glow: 0 0 0 1px rgba(0, 229, 255, 0.15), 0 0 40px rgba(0, 229, 255, 0.08);
+
+  --scrollbar-track: rgb(5 7 11);
+  --scrollbar-thumb: #1c2733;
+  --scrollbar-thumb-hover: #26333f;
+
+  --candle-opacity: 0.22;
+}
+
+/* Day */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --color-ink: 244 247 250;
+  --color-panel: 255 255 255;
+  --color-panel-2: 236 240 245;
+  --color-line: rgba(15, 23, 32, 0.1);
+
+  --color-cyan: 0 137 168;
+  --color-blue: 54 82 204;
+  --color-mint: 12 148 87;
+  --color-rose: 214 49 79;
+
+  --color-paper: 14 20 28;
+  --color-dim: 91 102 115;
+
+  --color-grid-line: rgba(15, 23, 32, 0.05);
+  --color-hero-fade: rgba(0, 137, 168, 0.14);
+  --shadow-glow: 0 0 0 1px rgba(0, 137, 168, 0.16), 0 0 30px rgba(0, 137, 168, 0.1);
+
+  --scrollbar-track: rgb(244 247 250);
+  --scrollbar-thumb: #cdd4de;
+  --scrollbar-thumb-hover: #b4bdc9;
+
+  --candle-opacity: 0.14;
 }
 
 * {
@@ -15,20 +71,30 @@ html {
 }
 
 body {
-  background-color: #05070b;
-  color: #f5f7fa;
+  background-color: rgb(var(--color-ink));
+  color: rgb(var(--color-paper));
+}
+
+/* smooth crossfade when switching night/day */
+body,
+header,
+section,
+footer,
+[class*="border-"],
+[class*="bg-"] {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
 
 ::selection {
-  background: #00e5ff;
-  color: #05070b;
+  background: rgb(var(--color-cyan));
+  color: rgb(var(--color-ink));
 }
 
 /* visible keyboard focus */
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #00e5ff;
+  outline: 2px solid rgb(var(--color-cyan));
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -38,18 +104,18 @@ summary:focus-visible {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #05070b;
+  background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1c2733;
+  background: var(--scrollbar-thumb);
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #26333f;
+  background: var(--scrollbar-thumb-hover);
 }
 
 .text-glow {
-  text-shadow: 0 0 24px rgba(0, 229, 255, 0.35);
+  text-shadow: 0 0 24px rgba(var(--color-cyan), 0.35);
 }
 
 .mono-tabular {
@@ -95,4 +161,35 @@ summary:focus-visible {
 
 .animate-pulse-dot {
   animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+/* ============ CANDLESTICK BACKGROUND ============ */
+.candle-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.candle-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  width: max-content;
+  animation: candles-scroll 90s linear infinite;
+  will-change: transform;
+  opacity: var(--candle-opacity);
+  transition: opacity 0.4s ease;
+}
+
+@keyframes candles-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }

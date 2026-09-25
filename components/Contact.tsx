@@ -1,7 +1,7 @@
 const channels = [
-  { label: "LINE", value: "@astoquant" },
-  { label: "Telegram", value: "t.me/astoquant" },
-  { label: "อีเมล", value: "support@astoquant.com" },
+  { label: "LINE", value: "@pichaifx" },
+  { label: "Telegram", value: "t.me/pichaifx" },
+  { label: "อีเมล", value: "support@pichaifx.com" },
 ];
 
 export default function Contact() {
@@ -15,7 +15,7 @@ export default function Contact() {
                 มีคำถามเกี่ยวกับระบบ?
               </h2>
               <p className="mt-4 max-w-sm text-sm leading-relaxed text-dim">
-                ทีมงาน ASTO QUANT พร้อมให้คำปรึกษาเรื่องการเชื่อมต่อบัญชี
+                ทีมงาน PichaiFX Autotrad พร้อมให้คำปรึกษาเรื่องการเชื่อมต่อบัญชี
                 การเลือกกลยุทธ์ และการตั้งค่าระบบให้เหมาะกับคุณ
               </p>
             </div>

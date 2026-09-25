@@ -24,7 +24,7 @@ export default function Footer() {
                 <span className="h-2.5 w-2.5 rounded-sm bg-cyan" />
               </span>
               <span className="font-display text-[15px] font-semibold text-paper">
-                ASTO QUANT
+                PichaiFX Autotrad
               </span>
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-dim">
@@ -55,7 +55,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col gap-4 border-t border-line pt-8 text-xs text-dim sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} ASTO QUANT. สงวนลิขสิทธิ์ทุกประการ</p>
+          <p>© {new Date().getFullYear()} PichaiFX Autotrad. สงวนลิขสิทธิ์ทุกประการ</p>
           <p className="max-w-xl leading-relaxed">
             การเทรดผลิตภัณฑ์ทางการเงินมีความเสี่ยง ผลตอบแทนในอดีตไม่ได้เป็น
             เครื่องยืนยันผลตอบแทนในอนาคต โปรดพิจารณาความเสี่ยงก่อนตัดสินใจลงทุน

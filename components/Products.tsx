@@ -1,6 +1,6 @@
 const products = [
   {
-    name: "ASTO EA",
+    name: "PichaiFX EA",
     desc: "หุ่นยนต์เทรดอัตโนมัติสำหรับ MT4 และ MT5 ทำงานตามกลยุทธ์ที่ตั้งไว้โดยไม่ต้องเฝ้าจอ",
     tag: "MT4 / MT5",
   },

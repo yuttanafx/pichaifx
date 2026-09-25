@@ -24,7 +24,7 @@ export default function Hero() {
           </h1>
 
           <p className="mt-6 max-w-md text-[17px] leading-relaxed text-dim">
-            ASTO QUANT เปลี่ยนกลยุทธ์การเทรดของคุณให้เป็นระบบอัตโนมัติที่ทำงานจริง
+            PichaiFX Autotrad เปลี่ยนกลยุทธ์การเทรดของคุณให้เป็นระบบอัตโนมัติที่ทำงานจริง
             พร้อมข้อมูลผลการเทรดที่ตรวจสอบได้ ไม่ใช่แค่คำโฆษณา
           </p>
 
@@ -63,7 +63,7 @@ export default function Hero() {
           <div className="rounded-xl border border-line bg-panel/90 shadow-glow backdrop-blur">
             <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
               <span className="font-mono text-xs tracking-wide text-dim">
-                ASTO ENGINE · LIVE
+                PICHAIFX ENGINE · LIVE
               </span>
               <span className="flex items-center gap-1.5 text-xs text-mint">
                 <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" />
