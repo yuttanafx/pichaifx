@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import CandlestickBackground from "@/components/CandlestickBackground";
 import RobotTrader from "@/components/RobotTrader";
+import VisitorCounter from "@/components/VisitorCounter";
 
 // Runs before React hydrates so the site never flashes the wrong theme.
 // Default theme is "dark" (night); we only need to act when the visitor
@@ -63,6 +64,7 @@ export default function RootLayout({
         <CandlestickBackground />
         {children}
         <RobotTrader />
+        <VisitorCounter />
       </body>
     </html>
   );

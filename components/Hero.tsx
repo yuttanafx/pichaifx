@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const positions = [
   { symbol: "XAUUSD", side: "BUY", price: "2,638.42", change: "+1.28%", up: true },
   { symbol: "BTCUSD", side: "BUY", price: "108,420", change: "+2.14%", up: true },
@@ -114,6 +116,17 @@ export default function Hero() {
                   strokeLinejoin="round"
                 />
               </svg>
+            </div>
+
+            <div className="border-t border-line p-4">
+              <Image
+                src="/images/goldgridtve.jpg"
+                alt="GoldGridTVE — Automated Trading System ทำงานอัตโนมัติตลอด 24/7"
+                width={810}
+                height={540}
+                className="w-full rounded-lg border border-line"
+                priority
+              />
             </div>
           </div>
         </div>
