@@ -30,7 +30,31 @@ export default function Hero() {
             พร้อมข้อมูลผลการเทรดที่ตรวจสอบได้ ไม่ใช่แค่คำโฆษณา
           </p>
 
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+          <a
+            href="https://tvesystem.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 block overflow-hidden rounded-xl border border-line shadow-glow transition-transform hover:scale-[1.01]"
+          >
+            <Image
+              src="/images/alpha-ai-signals.jpg"
+              alt="Alpha AI Trading Signals — สัญญาณเทรดรายวันและรายเดือนจาก AI คลิกเพื่อดูสัญญาณล่าสุด"
+              width={1600}
+              height={873}
+              className="w-full"
+              priority
+            />
+          </a>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <a
+              href="https://tvesystem.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md bg-mint px-6 py-3.5 text-center text-sm font-medium text-ink transition-transform hover:scale-[1.02]"
+            >
+              ซิกแนว AI
+            </a>
             <a
               href="#pricing"
               className="rounded-md bg-cyan px-6 py-3.5 text-center text-sm font-medium text-ink transition-transform hover:scale-[1.02]"
