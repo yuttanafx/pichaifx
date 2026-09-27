@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-
-const brokers = ["OEXN", "Exness", "XM", "IC Markets", "FBS", "Pepperstone", "อื่น ๆ"];
+import { useLanguage } from "@/lib/language-context";
 
 export default function ConnectAccount() {
+  const { t } = useLanguage();
+  const d = t.connectAccount;
   const [status, setStatus] = useState<"idle" | "loading" | "submitted" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [form, setForm] = useState({
@@ -14,9 +15,10 @@ export default function ConnectAccount() {
     accountNumber: "",
     server: "",
     note: "",
+    pdpaConsent: false,
   });
 
-  const update = (key: keyof typeof form, value: string) =>
+  const update = (key: keyof typeof form, value: string | boolean) =>
     setForm((f) => ({ ...f, [key]: value }));
 
   const canSubmit =
@@ -24,7 +26,8 @@ export default function ConnectAccount() {
     form.contact.trim() &&
     form.broker.trim() &&
     form.accountNumber.trim() &&
-    form.server.trim();
+    form.server.trim() &&
+    form.pdpaConsent;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,14 +47,14 @@ export default function ConnectAccount() {
 
       if (!res.ok || !data.ok) {
         setStatus("error");
-        setErrorMessage(data.error || "ส่งข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+        setErrorMessage(data.error || d.labels.genericError);
         return;
       }
 
       setStatus("submitted");
     } catch {
       setStatus("error");
-      setErrorMessage("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่อีกครั้ง");
+      setErrorMessage(d.labels.networkError);
     }
   };
 
@@ -60,30 +63,21 @@ export default function ConnectAccount() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
-            <p className="text-sm text-cyan">สำหรับสมาชิก</p>
+            <p className="text-sm text-cyan">{d.eyebrow}</p>
             <h2 className="mt-3 font-display text-3xl font-semibold leading-tight text-paper sm:text-4xl">
-              แจ้งบัญชีเทรดให้แอดมิน
+              {d.title}
             </h2>
-            <p className="mt-5 max-w-md leading-relaxed text-dim">
-              กรอกข้อมูลบัญชีเทรด MT4 / MT5 ที่คุณต้องการใช้งาน แอดมินจะติดต่อกลับ
-              เพื่อยืนยันตัวตนและเปิดใช้งานระบบเทรดอัตโนมัติให้กับบัญชีของคุณ
-            </p>
+            <p className="mt-5 max-w-md leading-relaxed text-dim">{d.body}</p>
 
             <div className="mt-8 space-y-4 rounded-xl border border-line bg-panel p-6">
-              <p className="text-sm font-medium text-paper">ขั้นตอนหลังจากส่งข้อมูล</p>
+              <p className="text-sm font-medium text-paper">{d.afterSubmitLabel}</p>
               <ul className="space-y-3 text-sm leading-relaxed text-dim">
-                <li className="flex gap-2.5">
-                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-cyan" />
-                  แอดมินตรวจสอบข้อมูลบัญชีและติดต่อกลับผ่านช่องทางที่คุณให้ไว้
-                </li>
-                <li className="flex gap-2.5">
-                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-cyan" />
-                  แอดมินจะแจ้งขั้นตอนการเปิดใช้งาน EA หรือ Copy Trading ให้ตรงกับบัญชีของคุณ
-                </li>
-                <li className="flex gap-2.5">
-                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-cyan" />
-                  ไม่ต้องส่งรหัสผ่านใด ๆ ในขั้นตอนนี้ แอดมินจะแจ้งวิธีเชื่อมต่อที่ปลอดภัยอีกครั้ง
-                </li>
+                {d.afterSubmitItems.map((item) => (
+                  <li key={item} className="flex gap-2.5">
+                    <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-cyan" />
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -95,21 +89,26 @@ export default function ConnectAccount() {
                   ✓
                 </span>
                 <h3 className="font-display text-lg font-semibold text-paper">
-                  ส่งข้อมูลเรียบร้อยแล้ว
+                  {d.successTitle}
                 </h3>
-                <p className="text-sm leading-relaxed text-dim">
-                  ทีมงาน PichaiFX Autotrad ได้รับข้อมูลบัญชีของคุณแล้ว
-                  แอดมินจะติดต่อกลับผ่านช่องทางที่ให้ไว้ภายใน 24 ชั่วโมง
-                </p>
+                <p className="text-sm leading-relaxed text-dim">{d.successBody}</p>
                 <button
                   type="button"
                   onClick={() => {
                     setStatus("idle");
-                    setForm({ name: "", contact: "", broker: "", accountNumber: "", server: "", note: "" });
+                    setForm({
+                      name: "",
+                      contact: "",
+                      broker: "",
+                      accountNumber: "",
+                      server: "",
+                      note: "",
+                      pdpaConsent: false,
+                    });
                   }}
                   className="mt-2 rounded-md border border-line px-4 py-2.5 text-sm font-medium text-paper hover:border-cyan/40 hover:bg-panel2"
                 >
-                  แจ้งอีกบัญชี
+                  {d.successAgain}
                 </button>
               </div>
             ) : (
@@ -117,12 +116,12 @@ export default function ConnectAccount() {
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
                     <label htmlFor="name" className="mb-2 block text-xs text-dim">
-                      ชื่อ-นามสกุล
+                      {d.labels.name}
                     </label>
                     <input
                       id="name"
                       type="text"
-                      placeholder="ชื่อของคุณ"
+                      placeholder={d.labels.namePlaceholder}
                       value={form.name}
                       onChange={(e) => update("name", e.target.value)}
                       required
@@ -131,12 +130,12 @@ export default function ConnectAccount() {
                   </div>
                   <div>
                     <label htmlFor="contact" className="mb-2 block text-xs text-dim">
-                      ช่องทางติดต่อกลับ
+                      {d.labels.contact}
                     </label>
                     <input
                       id="contact"
                       type="text"
-                      placeholder="LINE ID หรือเบอร์โทรศัพท์"
+                      placeholder={d.labels.contactPlaceholder}
                       value={form.contact}
                       onChange={(e) => update("contact", e.target.value)}
                       required
@@ -147,7 +146,7 @@ export default function ConnectAccount() {
 
                 <div>
                   <label htmlFor="broker" className="mb-2 block text-xs text-dim">
-                    โบรกเกอร์
+                    {d.labels.broker}
                   </label>
                   <select
                     id="broker"
@@ -157,9 +156,9 @@ export default function ConnectAccount() {
                     className="w-full rounded-md border border-line bg-panel2 px-3.5 py-2.5 text-sm text-paper outline-none transition-colors focus:border-cyan/50"
                   >
                     <option value="" disabled>
-                      เลือกโบรกเกอร์ของคุณ
+                      {d.labels.brokerPlaceholder}
                     </option>
-                    {brokers.map((b) => (
+                    {d.brokers.map((b) => (
                       <option key={b} value={b}>
                         {b}
                       </option>
@@ -170,13 +169,13 @@ export default function ConnectAccount() {
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
                     <label htmlFor="accountNumber" className="mb-2 block text-xs text-dim">
-                      เลขบัญชีเทรด
+                      {d.labels.accountNumber}
                     </label>
                     <input
                       id="accountNumber"
                       type="text"
                       inputMode="numeric"
-                      placeholder="เช่น 88421093"
+                      placeholder={d.labels.accountNumberPlaceholder}
                       value={form.accountNumber}
                       onChange={(e) => update("accountNumber", e.target.value)}
                       required
@@ -185,12 +184,12 @@ export default function ConnectAccount() {
                   </div>
                   <div>
                     <label htmlFor="server" className="mb-2 block text-xs text-dim">
-                      เซิร์ฟเวอร์ (Server)
+                      {d.labels.server}
                     </label>
                     <input
                       id="server"
                       type="text"
-                      placeholder="เช่น Exness-Real8"
+                      placeholder={d.labels.serverPlaceholder}
                       value={form.server}
                       onChange={(e) => update("server", e.target.value)}
                       required
@@ -201,12 +200,12 @@ export default function ConnectAccount() {
 
                 <div>
                   <label htmlFor="note" className="mb-2 block text-xs text-dim">
-                    ข้อความเพิ่มเติม (ถ้ามี)
+                    {d.labels.note}
                   </label>
                   <textarea
                     id="note"
                     rows={3}
-                    placeholder="เช่น ต้องการใช้กลยุทธ์ PichaiFX Gold หรือสอบถามเพิ่มเติม"
+                    placeholder={d.labels.notePlaceholder}
                     value={form.note}
                     onChange={(e) => update("note", e.target.value)}
                     className="w-full resize-none rounded-md border border-line bg-panel2 px-3.5 py-2.5 text-sm text-paper outline-none transition-colors placeholder:text-dim/70 focus:border-cyan/50"
@@ -219,12 +218,34 @@ export default function ConnectAccount() {
                   </p>
                 )}
 
+                <label className="flex items-start gap-2.5 text-xs leading-relaxed text-dim">
+                  <input
+                    type="checkbox"
+                    checked={form.pdpaConsent}
+                    onChange={(e) => update("pdpaConsent", e.target.checked)}
+                    required
+                    className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-line bg-panel2 accent-cyan"
+                  />
+                  <span>
+                    {d.labels.consentPrefix}{" "}
+                    <a
+                      href="/privacy-policy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-cyan underline underline-offset-2"
+                    >
+                      {d.labels.consentLinkText}
+                    </a>{" "}
+                    {d.labels.consentSuffix}
+                  </span>
+                </label>
+
                 <button
                   type="submit"
                   disabled={!canSubmit || status === "loading"}
                   className="mt-1 rounded-md bg-cyan py-3.5 text-sm font-medium text-ink transition-transform enabled:hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  {status === "loading" ? "กำลังส่งข้อมูล..." : "ส่งข้อมูลให้แอดมิน"}
+                  {status === "loading" ? d.labels.submitting : d.labels.submit}
                 </button>
               </form>
             )}

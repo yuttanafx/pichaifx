@@ -1,47 +1,22 @@
-const strategies = [
-  {
-    name: "PichaiFX Gold",
-    focus: "XAUUSD Trend Following",
-    ret: "+18.4%",
-    dd: "6.2%",
-    risk: "ปานกลาง",
-    followers: "482",
-  },
-  {
-    name: "PichaiFX Grid",
-    focus: "Multi-pair Grid System",
-    ret: "+11.9%",
-    dd: "4.8%",
-    risk: "ต่ำ",
-    followers: "310",
-  },
-  {
-    name: "PichaiFX Momentum",
-    focus: "BTCUSD / ETHUSD",
-    ret: "+27.1%",
-    dd: "12.4%",
-    risk: "สูง",
-    followers: "196",
-  },
-];
+"use client";
+
+import { useLanguage } from "@/lib/language-context";
 
 export default function CopyTrading() {
+  const { t } = useLanguage();
   return (
     <section id="copy-trading" className="border-t border-line py-24">
       <div className="mx-auto max-w-6xl px-6">
         <div className="max-w-xl">
-          <p className="text-sm text-cyan">Copy Trading</p>
+          <p className="text-sm text-cyan">{t.copyTrading.eyebrow}</p>
           <h2 className="mt-3 font-display text-3xl font-semibold text-paper sm:text-4xl">
-            เลือกกลยุทธ์ แล้วให้ระบบเทรดแทนคุณ
+            {t.copyTrading.title}
           </h2>
-          <p className="mt-4 text-sm leading-relaxed text-dim">
-            ตัวเลขผลตอบแทนด้านล่างอ้างอิงจากบัญชีจริงย้อนหลัง 90 วัน
-            ผลตอบแทนในอดีตไม่ได้เป็นการรับประกันผลตอบแทนในอนาคต
-          </p>
+          <p className="mt-4 text-sm leading-relaxed text-dim">{t.copyTrading.body}</p>
         </div>
 
         <div className="mt-12 grid gap-5 lg:grid-cols-3">
-          {strategies.map((s) => (
+          {t.copyTrading.strategies.map((s) => (
             <div
               key={s.name}
               className="rounded-xl border border-line bg-panel p-6"
@@ -54,14 +29,14 @@ export default function CopyTrading() {
                   <p className="mt-1 text-xs text-dim">{s.focus}</p>
                 </div>
                 <span className="rounded border border-line px-2 py-0.5 font-mono text-[11px] text-dim">
-                  {s.risk}
+                  {t.copyTrading.riskLabels[s.risk] ?? s.risk}
                 </span>
               </div>
 
               <div className="mt-6 grid grid-cols-3 gap-4 border-t border-line pt-5">
                 <div>
                   <p className="font-mono text-base text-mint">{s.ret}</p>
-                  <p className="mt-1 text-[11px] text-dim">ผลตอบแทน</p>
+                  <p className="mt-1 text-[11px] text-dim">{t.copyTrading.returnLabel}</p>
                 </div>
                 <div>
                   <p className="font-mono text-base text-paper">{s.dd}</p>
@@ -69,7 +44,7 @@ export default function CopyTrading() {
                 </div>
                 <div>
                   <p className="font-mono text-base text-paper">{s.followers}</p>
-                  <p className="mt-1 text-[11px] text-dim">ผู้ติดตาม</p>
+                  <p className="mt-1 text-[11px] text-dim">{t.copyTrading.followersLabel}</p>
                 </div>
               </div>
 
@@ -77,7 +52,7 @@ export default function CopyTrading() {
                 href="#"
                 className="mt-6 block rounded-md border border-line py-2.5 text-center text-sm font-medium text-paper transition-colors hover:border-cyan/40 hover:bg-panel2"
               >
-                ดูรายละเอียดกลยุทธ์
+                {t.copyTrading.detailsBtn}
               </a>
             </div>
           ))}

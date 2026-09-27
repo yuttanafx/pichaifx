@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useLanguage } from "@/lib/language-context";
 
 const positions = [
   { symbol: "XAUUSD", side: "BUY", price: "2,638.42", change: "+1.28%", up: true },
@@ -7,6 +10,8 @@ const positions = [
 ];
 
 export default function Hero() {
+  const { t } = useLanguage();
+
   return (
     <section id="top" className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-grid bg-[size:44px_44px] [mask-image:radial-gradient(70%_60%_at_50%_0%,black,transparent)]" />
@@ -16,18 +21,17 @@ export default function Hero() {
         <div>
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-panel/60 px-3 py-1.5 text-xs text-dim">
             <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" />
-            รองรับ MT4 และ MT5 · เชื่อมต่อได้ทันที
+            {t.hero.badge}
           </div>
 
           <h1 className="font-display text-[42px] font-semibold leading-[1.08] text-paper sm:text-[54px] lg:text-[58px]">
-            เทรดของคุณ ทำงานเอง
+            {t.hero.titleLine1}
             <br />
-            ตลอด 24 ชั่วโมง
+            {t.hero.titleLine2}
           </h1>
 
           <p className="mt-6 max-w-md text-[17px] leading-relaxed text-dim">
-            PichaiFX Autotrad เปลี่ยนกลยุทธ์การเทรดของคุณให้เป็นระบบอัตโนมัติที่ทำงานจริง
-            พร้อมข้อมูลผลการเทรดที่ตรวจสอบได้ ไม่ใช่แค่คำโฆษณา
+            {t.hero.subtitle}
           </p>
 
           <a
@@ -38,7 +42,7 @@ export default function Hero() {
           >
             <Image
               src="/images/alpha-ai-signals.jpg"
-              alt="Alpha AI Trading Signals — สัญญาณเทรดรายวันและรายเดือนจาก AI คลิกเพื่อดูสัญญาณล่าสุด"
+              alt={t.hero.heroImageAlt}
               width={1600}
               height={873}
               className="w-full"
@@ -53,29 +57,24 @@ export default function Hero() {
               rel="noopener noreferrer"
               className="rounded-md bg-mint px-6 py-3.5 text-center text-sm font-medium text-ink transition-transform hover:scale-[1.02]"
             >
-              ซิกแนว AI
+              {t.hero.ctaSignal}
             </a>
             <a
               href="#pricing"
               className="rounded-md bg-cyan px-6 py-3.5 text-center text-sm font-medium text-ink transition-transform hover:scale-[1.02]"
             >
-              เริ่มใช้งานฟรี
+              {t.hero.ctaStart}
             </a>
             <a
               href="#performance"
               className="rounded-md border border-line px-6 py-3.5 text-center text-sm font-medium text-paper transition-colors hover:border-cyan/40 hover:bg-panel"
             >
-              ดูผลการเทรดจริง
+              {t.hero.ctaPerformance}
             </a>
           </div>
 
           <div className="mt-12 grid grid-cols-2 gap-6 border-t border-line pt-8 sm:grid-cols-4">
-            {[
-              ["MT4 / MT5", "รองรับเต็มรูปแบบ"],
-              ["อัตโนมัติ", "ส่งคำสั่งทันที"],
-              ["24/5", "ตลอดเวลาตลาดเปิด"],
-              ["Risk Engine", "ควบคุมความเสี่ยง"],
-            ].map(([a, b]) => (
+            {t.hero.stats.map(([a, b]) => (
               <div key={a}>
                 <p className="font-display text-lg font-semibold text-paper">{a}</p>
                 <p className="mt-1 text-xs text-dim">{b}</p>
@@ -89,11 +88,11 @@ export default function Hero() {
           <div className="rounded-xl border border-line bg-panel/90 shadow-glow backdrop-blur">
             <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
               <span className="font-mono text-xs tracking-wide text-dim">
-                PICHAIFX ENGINE · LIVE
+                {t.hero.panelLive}
               </span>
               <span className="flex items-center gap-1.5 text-xs text-mint">
                 <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" />
-                ONLINE
+                {t.hero.panelOnline}
               </span>
             </div>
 
@@ -145,7 +144,7 @@ export default function Hero() {
             <div className="border-t border-line p-4">
               <Image
                 src="/images/goldgridtve.jpg"
-                alt="GoldGridTVE — Automated Trading System ทำงานอัตโนมัติตลอด 24/7"
+                alt={t.hero.goldGridAlt}
                 width={810}
                 height={540}
                 className="w-full rounded-lg border border-line"

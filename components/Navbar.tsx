@@ -2,18 +2,11 @@
 
 import { useEffect, useState } from "react";
 import ThemeToggle from "./ThemeToggle";
-
-const links = [
-  { href: "#platform", label: "แพลตฟอร์ม" },
-  { href: "#products", label: "โปรดักต์" },
-  { href: "#performance", label: "ผลการเทรด" },
-  { href: "#ea-download", label: "EA เทรด" },
-  { href: "#connect-account", label: "แจ้งบัญชีเทรด" },
-  { href: "#academy", label: "อคาเดมี" },
-  { href: "#pricing", label: "แพ็กเกจ" },
-];
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/lib/language-context";
 
 export default function Navbar() {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -41,7 +34,7 @@ export default function Navbar() {
         </a>
 
         <nav className="hidden items-center gap-8 lg:flex">
-          {links.map((l) => (
+          {t.nav.links.map((l) => (
             <a
               key={l.href}
               href={l.href}
@@ -53,25 +46,27 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <LanguageSwitcher />
           <ThemeToggle />
           <a
             href="#connect-account"
             className="text-sm text-dim transition-colors hover:text-paper"
           >
-            เข้าสู่ระบบ
+            {t.nav.login}
           </a>
           <a
             href="#pricing"
             className="rounded-md bg-cyan px-4 py-2 text-sm font-medium text-ink transition-transform hover:scale-[1.03]"
           >
-            เริ่มต้นใช้งาน
+            {t.nav.start}
           </a>
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
+          <LanguageSwitcher />
           <ThemeToggle />
           <button
-            aria-label="เปิดเมนู"
+            aria-label={t.nav.openMenu}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
             className="grid h-9 w-9 place-items-center rounded-md border border-line"
@@ -88,7 +83,7 @@ export default function Navbar() {
       {open && (
         <div className="border-t border-line bg-ink px-6 pb-6 pt-2 lg:hidden">
           <nav className="flex flex-col gap-1">
-            {links.map((l) => (
+            {t.nav.links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
@@ -103,7 +98,7 @@ export default function Navbar() {
               onClick={() => setOpen(false)}
               className="mt-2 rounded-md bg-cyan px-4 py-3 text-center text-sm font-medium text-ink"
             >
-              เริ่มต้นใช้งาน
+              {t.nav.start}
             </a>
           </nav>
         </div>

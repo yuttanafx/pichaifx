@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/lib/language-context";
 
 const SESSION_FLAG = "pichaifx-visit-counted";
 
 export default function VisitorCounter() {
+  const { t, locale } = useLanguage();
   const [count, setCount] = useState<number | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
@@ -50,11 +52,11 @@ export default function VisitorCounter() {
       aria-live="polite"
     >
       <span className="h-1.5 w-1.5 flex-shrink-0 animate-pulse rounded-full bg-mint" />
-      <span>ยอดผู้เข้าชม</span>
+      <span>{t.visitorCounter.label}</span>
       <span className="font-display font-semibold text-paper">
         {status === "loading" || count === null
           ? "…"
-          : count.toLocaleString("th-TH")}
+          : count.toLocaleString(locale === "th" ? "th-TH" : locale === "zh" ? "zh-CN" : "en-US")}
       </span>
     </div>
   );

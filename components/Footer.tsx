@@ -1,19 +1,9 @@
-const columns = [
-  {
-    title: "แพลตฟอร์ม",
-    links: ["EA / Auto Trading", "MT4 / MT5", "Risk Engine", "Analytics"],
-  },
-  {
-    title: "บริษัท",
-    links: ["เกี่ยวกับเรา", "ผลการเทรด", "อคาเดมี", "ติดต่อเรา"],
-  },
-  {
-    title: "กฎหมาย",
-    links: ["ข้อตกลงการใช้งาน", "นโยบายความเป็นส่วนตัว", "คำเตือนความเสี่ยง"],
-  },
-];
+"use client";
+
+import { useLanguage } from "@/lib/language-context";
 
 export default function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="border-t border-line py-16">
       <div className="mx-auto max-w-6xl px-6">
@@ -28,23 +18,22 @@ export default function Footer() {
               </span>
             </div>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-dim">
-              เทคโนโลยีสำหรับการเทรดอัตโนมัติ ออกแบบเพื่อความโปร่งใส
-              ตรวจสอบได้ และควบคุมความเสี่ยงอย่างเป็นระบบ
+              {t.footer.tagline}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-            {columns.map((col) => (
+            {t.footer.columns.map((col) => (
               <div key={col.title}>
                 <p className="text-sm font-medium text-paper">{col.title}</p>
                 <ul className="mt-4 flex flex-col gap-3">
                   {col.links.map((l) => (
-                    <li key={l}>
+                    <li key={l.label}>
                       <a
-                        href="#"
+                        href={l.href}
                         className="text-sm text-dim transition-colors hover:text-paper"
                       >
-                        {l}
+                        {l.label}
                       </a>
                     </li>
                   ))}
@@ -55,11 +44,21 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col gap-4 border-t border-line pt-8 text-xs text-dim sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} PichaiFX Autotrad. สงวนลิขสิทธิ์ทุกประการ</p>
-          <p className="max-w-xl leading-relaxed">
-            การเทรดผลิตภัณฑ์ทางการเงินมีความเสี่ยง ผลตอบแทนในอดีตไม่ได้เป็น
-            เครื่องยืนยันผลตอบแทนในอนาคต โปรดพิจารณาความเสี่ยงก่อนตัดสินใจลงทุน
-          </p>
+          <p>© {new Date().getFullYear()} PichaiFX Autotrad. {t.footer.rights}</p>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("open-cookie-settings"))}
+            className="text-left text-xs text-dim underline underline-offset-2 transition-colors hover:text-paper sm:text-right"
+          >
+            {t.footer.cookieSettings}
+          </button>
+        </div>
+
+        <div className="mt-6 border-t border-line pt-6 text-xs leading-relaxed text-dim">
+          {t.footer.disclaimer}{" "}
+          <a href="/risk-warning" className="underline underline-offset-2 hover:text-paper">
+            {t.footer.riskLinkText}
+          </a>
         </div>
       </div>
     </footer>

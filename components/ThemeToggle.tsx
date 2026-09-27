@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/lib/language-context";
 
 export default function ThemeToggle({ className = "" }: { className?: string }) {
+  const { t } = useLanguage();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [mounted, setMounted] = useState(false);
 
@@ -27,8 +29,8 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
     <button
       type="button"
       onClick={toggle}
-      aria-label={theme === "dark" ? "สลับเป็นโหมดกลางวัน" : "สลับเป็นโหมดกลางคืน"}
-      title={theme === "dark" ? "โหมดกลางวัน" : "โหมดกลางคืน"}
+      aria-label={theme === "dark" ? t.themeToggle.toLight : t.themeToggle.toDark}
+      title={theme === "dark" ? t.themeToggle.lightMode : t.themeToggle.darkMode}
       className={`grid h-9 w-9 flex-shrink-0 place-items-center rounded-md border border-line text-dim transition-colors hover:border-cyan/40 hover:text-paper ${className}`}
     >
       {!mounted ? (

@@ -4,6 +4,8 @@ import "./globals.css";
 import CandlestickBackground from "@/components/CandlestickBackground";
 import RobotTrader from "@/components/RobotTrader";
 import VisitorCounter from "@/components/VisitorCounter";
+import CookieConsent from "@/components/CookieConsent";
+import { LanguageProvider } from "@/lib/language-context";
 
 // Runs before React hydrates so the site never flashes the wrong theme.
 // Default theme is "dark" (night); we only need to act when the visitor
@@ -61,10 +63,13 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="font-body antialiased" suppressHydrationWarning>
-        <CandlestickBackground />
-        {children}
-        <RobotTrader />
-        <VisitorCounter />
+        <LanguageProvider>
+          <CandlestickBackground />
+          {children}
+          <RobotTrader />
+          <VisitorCounter />
+          <CookieConsent />
+        </LanguageProvider>
       </body>
     </html>
   );

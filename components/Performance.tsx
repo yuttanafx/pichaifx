@@ -1,25 +1,22 @@
-const metrics = [
-  { label: "กำไรสุทธิ", value: "+$12,842", tone: "text-mint" },
-  { label: "Drawdown สูงสุด", value: "8.42%", tone: "text-paper" },
-  { label: "อัตราชนะ", value: "72.8%", tone: "text-paper" },
-  { label: "Profit Factor", value: "1.84", tone: "text-paper" },
-];
+"use client";
+
+import { useLanguage } from "@/lib/language-context";
 
 export default function Performance() {
+  const { t } = useLanguage();
   return (
     <section id="performance" className="border-t border-line py-24">
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
-            <p className="text-sm text-cyan">ผลการเทรด</p>
+            <p className="text-sm text-cyan">{t.performance.eyebrow}</p>
             <h2 className="mt-3 font-display text-3xl font-semibold leading-tight text-paper sm:text-4xl">
-              ตัวเลขที่ตรวจสอบได้
-              จริง ไม่ใช่คำโฆษณา
+              {t.performance.titleLine1}
+              <br />
+              {t.performance.titleLine2}
             </h2>
             <p className="mt-5 max-w-md leading-relaxed text-dim">
-              บัญชีทุกตัวของ PichaiFX Autotrad เชื่อมกับ Myfxbook เพื่อให้คุณตรวจสอบ
-              ผลตอบแทน ความเสี่ยง และประวัติการเทรดได้ตลอดเวลา
-              เราแยกผลการดำเนินงานจริงออกจากการคาดการณ์อย่างชัดเจน
+              {t.performance.body}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
@@ -28,7 +25,7 @@ export default function Performance() {
                 rel="noopener noreferrer"
                 className="rounded-md border border-line px-5 py-3 text-sm font-medium text-paper hover:border-cyan/40 hover:bg-panel"
               >
-                เปิดดู Myfxbook
+                {t.performance.ctaMyfxbook}
               </a>
               <a
                 href="https://www.myfxbook.com/members/yuttanafx"
@@ -36,16 +33,20 @@ export default function Performance() {
                 rel="noopener noreferrer"
                 className="rounded-md border border-line px-5 py-3 text-sm font-medium text-paper hover:border-cyan/40 hover:bg-panel"
               >
-                ประวัติการเทรดทั้งหมด
+                {t.performance.ctaHistory}
               </a>
             </div>
           </div>
 
           <div className="rounded-xl border border-line bg-panel p-6 sm:p-8">
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-              {metrics.map((m) => (
+              {t.performance.metrics.map((m, i) => (
                 <div key={m.label}>
-                  <p className={`font-display text-2xl font-semibold ${m.tone}`}>
+                  <p
+                    className={`font-display text-2xl font-semibold ${
+                      i === 0 ? "text-mint" : "text-paper"
+                    }`}
+                  >
                     {m.value}
                   </p>
                   <p className="mt-1 text-xs text-dim">{m.label}</p>
@@ -54,7 +55,7 @@ export default function Performance() {
             </div>
 
             <div className="mt-8 border-t border-line pt-6">
-              <p className="mb-3 text-xs text-dim">เส้นกราฟเงินทุนสะสม</p>
+              <p className="mb-3 text-xs text-dim">{t.performance.equityChartLabel}</p>
               <svg viewBox="0 0 600 160" className="h-32 w-full sm:h-40">
                 <defs>
                   <linearGradient id="equityFill" x1="0" y1="0" x2="0" y2="1">
