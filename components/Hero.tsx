@@ -52,7 +52,7 @@ export default function Hero() {
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <a
-              href="https://tvesystem.vercel.app"
+              href="https://signal-gold-eight.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-md bg-mint px-6 py-3.5 text-center text-sm font-medium text-ink transition-transform hover:scale-[1.02]"
