@@ -35,7 +35,7 @@ export default function Hero() {
           </p>
 
           <a
-            href="https://tvesystem.vercel.app"
+            href="https://signal-gold-eight.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="mt-8 block overflow-hidden rounded-xl border border-line shadow-glow transition-transform hover:scale-[1.01]"
