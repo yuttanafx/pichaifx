@@ -300,7 +300,7 @@ const th: Dictionary = {
     stepsLabel: "ขั้นตอนการใช้งาน",
     steps: [
       "ดาวน์โหลดไฟล์ EA จากลิงก์ด้านล่าง",
-      "ติดตั้งไฟล์ EA เข้ากับ MT4 / MT5  กด tool/option/ติ้ก Allow WebRequest/เพิ่ม https://script.google.com/ รอปลดล็อค EA",
+      "ติดตั้งไฟล์ EA เข้ากับ MT4 / MT5  กด tool/option/ติ้ก Allow WebRequest/เพิ่ม https://script.google.com/=https://docs.google.com รอปลดล็อค EA",
       "แจ้งบัญชีเทรดผ่านฟอร์มด้านล่างเพื่อให้แอดมินเปิดใช้งานให้",
     ],
   },
