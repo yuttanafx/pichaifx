@@ -24,6 +24,7 @@ export interface Dictionary {
     ctaSignal: string;
     ctaStart: string;
     ctaPerformance: string;
+    ctaAiSystem: string;
     stats: [string, string][];
     panelLive: string;
     panelOnline: string;
@@ -221,6 +222,7 @@ const th: Dictionary = {
     ctaSignal: "ซิกแนว AI",
     ctaStart: "เริ่มใช้งานฟรี",
     ctaPerformance: "ดูผลการเทรดจริง",
+    ctaAiSystem: "ระบบเทรดเอไอ",
     stats: [
       ["MT4 / MT5", "รองรับเต็มรูปแบบ"],
       ["อัตโนมัติ", "ส่งคำสั่งทันที"],
@@ -692,6 +694,7 @@ const en: Dictionary = {
     ctaSignal: "AI Signals",
     ctaStart: "Start Free",
     ctaPerformance: "View Live Results",
+    ctaAiSystem: "AI Trading System",
     stats: [
       ["MT4 / MT5", "Full support"],
       ["Automated", "Instant order execution"],
@@ -1163,6 +1166,7 @@ const zh: Dictionary = {
     ctaSignal: "AI 信号",
     ctaStart: "免费开始使用",
     ctaPerformance: "查看真实交易成绩",
+    ctaAiSystem: "AI 交易系统",
     stats: [
       ["MT4 / MT5", "完全支持"],
       ["自动化", "即时下单"],

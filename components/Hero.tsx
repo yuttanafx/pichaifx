@@ -71,6 +71,14 @@ export default function Hero() {
             >
               {t.hero.ctaPerformance}
             </a>
+            <a
+              href="https://mt-5-aitegus.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md border border-mint/50 px-6 py-3.5 text-center text-sm font-medium text-mint transition-colors hover:bg-mint/10"
+            >
+              {t.hero.ctaAiSystem}
+            </a>
           </div>
 
           <div className="mt-12 grid grid-cols-2 gap-6 border-t border-line pt-8 sm:grid-cols-4">
