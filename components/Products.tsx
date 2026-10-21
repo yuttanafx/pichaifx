@@ -38,6 +38,20 @@ export default function Products() {
             </div>
           ))}
         </div>
+
+        <div className="mt-8 overflow-hidden rounded-xl border border-line bg-panel shadow-glow">
+          <video
+            className="aspect-video w-full"
+            src="/videos/products.mp4"
+            poster="/videos/products-poster.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            controls
+            preload="metadata"
+          />
+        </div>
       </div>
     </section>
   );
