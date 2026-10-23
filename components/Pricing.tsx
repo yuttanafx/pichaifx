@@ -3,11 +3,12 @@
 import { useLanguage } from "@/lib/language-context";
 
 const BROKER_SIGNUP_URL = "http://live.oexn.global/signup/xtAKY577";
+const BROKER_SIGNUP_URL_2 = "https://account.markets4you.online/en/user-registration/?affid=3b29oy6";
 
 const planMeta = [
-  { href: BROKER_SIGNUP_URL, external: true, sponsored: true, featured: false },
-  { href: "#contact", external: false, sponsored: false, featured: true },
-  { href: "#contact", external: false, sponsored: false, featured: false },
+  { href: BROKER_SIGNUP_URL, extraHref: BROKER_SIGNUP_URL_2, external: true, sponsored: true, featured: false },
+  { href: "#contact", extraHref: undefined, external: false, sponsored: false, featured: true },
+  { href: "#contact", extraHref: undefined, external: false, sponsored: false, featured: false },
 ];
 
 export default function Pricing() {
@@ -75,19 +76,14 @@ export default function Pricing() {
                   {p.cta}
                 </a>
 
-                {meta.sponsored && (
+                {meta.extraHref && (
                   <a
-                    href={BROKER_SIGNUP_URL}
+                    href={meta.extraHref}
                     target="_blank"
                     rel="noopener noreferrer sponsored"
-                    className="mt-4 flex items-center justify-between gap-3 rounded-md border border-line bg-panel2 px-3.5 py-2.5 transition-colors hover:border-cyan/40"
+                    className="mt-3 rounded-md border border-line py-3 text-center text-sm font-medium text-paper transition-transform hover:scale-[1.02] hover:border-cyan/40"
                   >
-                    <span className="text-[11px] uppercase tracking-wide text-dim">
-                      {t.pricing.sponsoredLabel}
-                    </span>
-                    <span className="font-display text-sm font-semibold tracking-wide text-paper">
-                      OEXN<span className="text-cyan">.</span>
-                    </span>
+                    MARKET 4 YOU
                   </a>
                 )}
               </div>
