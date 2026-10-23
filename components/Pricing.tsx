@@ -1,12 +1,12 @@
 "use client";
 
 import { useLanguage } from "@/lib/language-context";
+import { LINE_OA_URL } from "@/lib/translations";
 
 const BROKER_SIGNUP_URL = "http://live.oexn.global/signup/xtAKY577";
-const BROKER_SIGNUP_URL_2 = "https://account.markets4you.online/en/user-registration/?affid=3b29oy6";
 
 const planMeta = [
-  { href: BROKER_SIGNUP_URL, extraHref: BROKER_SIGNUP_URL_2, external: true, sponsored: true, featured: false },
+  { href: BROKER_SIGNUP_URL, extraHref: LINE_OA_URL, external: true, sponsored: true, featured: false },
   { href: "#contact", extraHref: undefined, external: false, sponsored: false, featured: true },
   { href: "#contact", extraHref: undefined, external: false, sponsored: false, featured: false },
 ];
@@ -80,7 +80,7 @@ export default function Pricing() {
                   <a
                     href={meta.extraHref}
                     target="_blank"
-                    rel="noopener noreferrer sponsored"
+                    rel="noopener noreferrer"
                     className="mt-3 rounded-md border border-line py-3 text-center text-sm font-medium text-paper transition-transform hover:scale-[1.02] hover:border-cyan/40"
                   >
                     {p.cta}
