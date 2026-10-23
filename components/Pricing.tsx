@@ -83,7 +83,7 @@ export default function Pricing() {
                     rel="noopener noreferrer sponsored"
                     className="mt-3 rounded-md border border-line py-3 text-center text-sm font-medium text-paper transition-transform hover:scale-[1.02] hover:border-cyan/40"
                   >
-                    MARKET 4 YOU
+                    {p.cta}
                   </a>
                 )}
               </div>
