@@ -1,9 +1,11 @@
 "use client";
 
 import { useLanguage } from "@/lib/language-context";
+import { MYFXBOOK_URL, PERFORMANCE, metricValues, widgetUrl } from "@/lib/performance-data";
 
 export default function Performance() {
   const { t } = useLanguage();
+  const values = metricValues();
   return (
     <section id="performance" className="border-t border-line py-24">
       <div className="mx-auto max-w-6xl px-6">
@@ -47,33 +49,27 @@ export default function Performance() {
                       i === 0 ? "text-mint" : "text-paper"
                     }`}
                   >
-                    {m.value}
+                    {values[i] ?? m.value}
                   </p>
                   <p className="mt-1 text-xs text-dim">{m.label}</p>
                 </div>
               ))}
             </div>
 
+            {PERFORMANCE.isSample && (
+              <p className="mt-3 text-[11px] text-amber-400">ตัวเลขสถิติด้านบนเป็นข้อมูลตัวอย่าง — ดูตัวเลขจริงที่กราฟ/ลิงก์ Myfxbook</p>
+            )}
+
             <div className="mt-8 border-t border-line pt-6">
-              <p className="mb-3 text-xs text-dim">{t.performance.equityChartLabel}</p>
-              <svg viewBox="0 0 600 160" className="h-32 w-full sm:h-40">
-                <defs>
-                  <linearGradient id="equityFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#00E5FF" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M0,130 C40,128 60,140 90,120 C120,100 150,110 180,90 C210,70 230,95 260,80 C300,60 320,85 350,65 C390,42 410,70 440,50 C480,26 500,55 530,35 C555,18 570,40 600,20"
-                  fill="none"
-                  stroke="#00E5FF"
-                  strokeWidth="2.5"
-                />
-                <path
-                  d="M0,130 C40,128 60,140 90,120 C120,100 150,110 180,90 C210,70 230,95 260,80 C300,60 320,85 350,65 C390,42 410,70 440,50 C480,26 500,55 530,35 C555,18 570,40 600,20 L600,160 L0,160 Z"
-                  fill="url(#equityFill)"
-                />
-              </svg>
+              <p className="mb-3 text-xs text-dim">{t.performance.equityChartLabel} · Myfxbook</p>
+              <a href={MYFXBOOK_URL} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-lg">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={widgetUrl("dark")} alt="Myfxbook Gold-Grid live results" loading="lazy"
+                  className="mfb-dark h-auto w-full" width={600} height={300} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={widgetUrl("light")} alt="Myfxbook Gold-Grid live results" loading="lazy"
+                  className="mfb-light h-auto w-full" width={600} height={300} />
+              </a>
             </div>
           </div>
         </div>

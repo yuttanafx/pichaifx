@@ -318,3 +318,8 @@ summary:focus-visible {
     transform: rotate(14deg);
   }
 }
+
+/* วิดเจ็ต Myfxbook: แสดงภาพตามธีม */
+.mfb-light { display: none; }
+[data-theme="light"] .mfb-dark { display: none; }
+[data-theme="light"] .mfb-light { display: block; }
