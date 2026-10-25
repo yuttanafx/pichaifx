@@ -9,6 +9,9 @@ export type BankAccount = {
 
 /** ตั้งค่าการชำระเงินโดยแอดมิน: ยอดรายเดือน + บัญชีกลางให้สมาชิกโอนเงิน */
 export type PaymentSettings = {
+  /** ค่าสมาชิกครั้งแรก (จ่ายตอนสมัครใช้งานครั้งแรก — ค่าแนะนำคิดจากยอดนี้) */
+  firstPriceSatang: number;
+  /** ค่าสมาชิกรายเดือน (ต่ออายุ) */
   priceSatang: number;
   bankName: string;
   accountNumber: string;
@@ -62,7 +65,7 @@ export type DashboardData = {
   payment: PaymentSettings;
   bank: BankAccount | null;
   rules: {
-    priceSatang: number;
+    priceSatang: number; // ฐานคิดค่าแนะนำ = ค่าสมาชิกครั้งแรก
     poolPercent: number;
     levels: { level: number; percent: number; amountSatang: number }[];
   };
@@ -98,6 +101,14 @@ export type AdminMember = {
   createdAt: string;
   isAdmin: boolean;
   bank: BankAccount | null;
+  /** สายล่างแต่ละชั้น (ชั้น 1-3) */
+  downline: { level: number; members: { id: string; name: string; email: string }[] }[];
+  commission: {
+    earnedSatang: number;
+    pendingSatang: number;
+    paidSatang: number;
+    byLevel: { level: number; amountSatang: number }[];
+  };
   accounts: {
     activationId: string;
     broker: string;

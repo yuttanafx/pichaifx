@@ -38,7 +38,7 @@ export async function GET() {
     ]);
     const sources = await getUsersByIds(commissions.map((c) => c.sourceUserId));
 
-    const amounts = levelAmountsSatang(payment.priceSatang);
+    const amounts = levelAmountsSatang(payment.firstPriceSatang);
     const sumBy = (f: (c: (typeof commissions)[number]) => boolean) =>
       commissions.filter(f).reduce((a, c) => a + c.amountSatang, 0);
 
@@ -52,7 +52,7 @@ export async function GET() {
       payment,
       bank: user.bank ?? null,
       rules: {
-        priceSatang: payment.priceSatang,
+        priceSatang: payment.firstPriceSatang,
         poolPercent: COMMISSION_POOL_PERCENT,
         levels: LEVEL_PERCENTS.map((percent, i) => ({
           level: i + 1,

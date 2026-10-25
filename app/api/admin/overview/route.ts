@@ -31,7 +31,7 @@ export async function GET() {
       ...coms.flatMap((c) => [c.beneficiaryId, c.sourceUserId]),
     ]);
     const settings = await getPaymentSettings();
-    const amounts = levelAmountsSatang(settings.priceSatang);
+    const amounts = levelAmountsSatang(settings.firstPriceSatang);
 
     const activations: AdminOverview["activations"] = [];
     for (const a of acts) {
@@ -56,7 +56,38 @@ export async function GET() {
       sourceName: users.get(c.sourceUserId)?.name ?? "-",
     }));
 
+    const children = new Map<string, typeof allUsers>();
+    for (const u of allUsers) {
+      if (!u.referrerId) continue;
+      children.set(u.referrerId, [...(children.get(u.referrerId) ?? []), u]);
+    }
+    const downlineOf = (id: string) => {
+      const out: AdminOverview["members"][number]["downline"] = [];
+      let layer = [id];
+      const seen = new Set([id]);
+      for (let level = 1; level <= 3; level++) {
+        const next = layer.flatMap((x) => children.get(x) ?? []).filter((c) => !seen.has(c.id));
+        next.forEach((c) => seen.add(c.id));
+        out.push({ level, members: next.map((c) => ({ id: c.id, name: c.name, email: c.email })) });
+        layer = next.map((c) => c.id);
+      }
+      return out;
+    };
+    const commissionOf = (id: string) => {
+      const mine = coms.filter((c) => c.beneficiaryId === id);
+      const sum = (f: (c: (typeof mine)[number]) => boolean) =>
+        mine.filter(f).reduce((a, c) => a + c.amountSatang, 0);
+      return {
+        earnedSatang: sum(() => true),
+        pendingSatang: sum((c) => c.status === "pending"),
+        paidSatang: sum((c) => c.status === "paid"),
+        byLevel: [1, 2, 3].map((l) => ({ level: l, amountSatang: sum((c) => c.level === l) })),
+      };
+    };
+
     const members: AdminOverview["members"] = allUsers.map((u) => ({
+      downline: downlineOf(u.id),
+      commission: commissionOf(u.id),
       id: u.id,
       name: u.name,
       email: u.email,

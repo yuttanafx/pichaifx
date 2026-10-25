@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/language-context";
 import { LINE_OA_URL } from "@/lib/translations";
 
@@ -13,6 +14,21 @@ const planMeta = [
 
 export default function Pricing() {
   const { t } = useLanguage();
+  // ยอดรายเดือนที่แอดมินตั้งไว้ (แพ็กเกจ Professional) — ถ้าโหลดไม่ได้ใช้ค่าในไฟล์แปลภาษา
+  const [livePrice, setLivePrice] = useState<string | null>(null);
+  const [firstPrice, setFirstPrice] = useState<string | null>(null);
+  useEffect(() => {
+    fetch("/api/pricing")
+      .then((r) => r.json())
+      .then((j) => {
+        if (j?.ok && typeof j.priceBaht === "number") {
+          const f = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+          setLivePrice(f(j.priceBaht));
+          if (typeof j.firstPriceBaht === "number") setFirstPrice(f(j.firstPriceBaht));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section id="pricing" className="border-t border-line py-24">
@@ -48,12 +64,17 @@ export default function Pricing() {
 
                 <div className="mt-6 flex items-end gap-1.5">
                   <span className="font-display text-3xl font-semibold text-paper">
-                    {p.price}
+                    {meta.featured && livePrice ? livePrice : p.price}
                   </span>
                   {p.period && (
                     <span className="pb-1 text-sm text-dim">{p.period}</span>
                   )}
                 </div>
+                {meta.featured && firstPrice && (
+                  <p className="mt-2 text-xs text-dim">
+                    ค่าสมาชิกครั้งแรก {firstPrice} บาท · First-time fee THB {firstPrice}
+                  </p>
+                )}
 
                 <ul className="mt-6 flex flex-1 flex-col gap-3">
                   {p.features.map((f) => (

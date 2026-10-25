@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { AdminOverview } from "@/lib/types";
 import { baht, thaiDate } from "@/lib/format";
@@ -20,6 +20,13 @@ export default function AdminPanel() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [q, setQ] = useState("");
+  const [open, setOpen] = useState<Set<string>>(new Set());
+  const toggle = (id: string) =>
+    setOpen((s) => {
+      const n = new Set(s);
+      n.has(id) ? n.delete(id) : n.add(id);
+      return n;
+    });
   const [tab, setTab] = useState<"acts" | "coms" | "members" | "settings">("acts");
 
   const load = useCallback(async () => {
@@ -151,18 +158,24 @@ export default function AdminPanel() {
               className="mb-4 w-full rounded-md border border-line bg-panel2 px-3.5 py-2.5 text-sm text-paper outline-none focus:border-cyan/50"
             />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[860px] text-left text-sm">
+              <table className="w-full min-w-[1000px] text-left text-sm">
                 <thead className="text-xs text-dim">
                   <tr>
                     <th className={th}>สมาชิก</th>
                     <th className={th}>สมัครเมื่อ</th>
                     <th className={th}>รหัสแนะนำ / ผู้แนะนำ / บัญชีรับเงิน</th>
                     <th className={th}>บัญชีเทรด / สถานะรายเดือน</th>
+                    <th className={th}>สายล่าง / ค่าแนะนำ</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {members.map((m) => (
-                    <tr key={m.id} className="border-t border-line align-top">
+                  {members.map((m) => {
+                    const total = m.downline.reduce((x, d) => x + d.members.length, 0);
+                    const isOpen = open.has(m.id);
+                    const mine = data.commissions.filter((c) => c.beneficiaryId === m.id);
+                    return (
+                    <Fragment key={m.id}>
+                    <tr className="border-t border-line align-top">
                       <td className="py-3 text-paper">
                         {m.name} {m.isAdmin && <span className="text-xs text-cyan">(แอดมิน)</span>}
                         <br /><span className="text-xs text-dim">{m.email}</span>
@@ -198,8 +211,79 @@ export default function AdminPanel() {
                           })}
                         </ul>
                       </td>
+                      <td className="py-3">
+                        <p className="text-paper">สายล่าง {total} คน</p>
+                        <p className="text-xs text-dim">
+                          {m.downline.map((d) => `ชั้น ${d.level}: ${d.members.length}`).join(" · ")}
+                        </p>
+                        <p className="mt-1 text-xs text-dim">
+                          ได้รวม <span className="font-mono text-paper">{baht(m.commission.earnedSatang)}</span>
+                          {" · "}รอจ่าย <span className="font-mono text-amber-300">{baht(m.commission.pendingSatang)}</span>
+                          {" · "}จ่ายแล้ว <span className="font-mono text-mint">{baht(m.commission.paidSatang)}</span>
+                        </p>
+                        <button onClick={() => toggle(m.id)} className="mt-2 rounded-md border border-line px-3 py-1 text-xs text-cyan hover:border-cyan/40">
+                          {isOpen ? "ซ่อนรายละเอียด ▴" : "ขยายดูรายละเอียด ▾"}
+                        </button>
+                      </td>
                     </tr>
-                  ))}
+                  
+                    {isOpen && (
+                      <tr className="bg-panel2/50">
+                        <td colSpan={5} className="px-4 py-4">
+                          <div className="grid gap-4 md:grid-cols-3">
+                            {m.downline.map((d) => (
+                              <div key={d.level} className="rounded-lg border border-line bg-panel p-4">
+                                <p className="text-xs text-cyan">
+                                  ชั้น {d.level} · {d.members.length} คน · ได้ {baht(m.commission.byLevel.find((b) => b.level === d.level)?.amountSatang ?? 0)}
+                                </p>
+                                {d.members.length === 0 ? (
+                                  <p className="mt-2 text-xs text-dim">ไม่มีสมาชิก</p>
+                                ) : (
+                                  <ul className="mt-2 space-y-1 text-sm">
+                                    {d.members.map((x) => (
+                                      <li key={x.id} className="text-paper">{x.name} <span className="text-xs text-dim">· {x.email}</span></li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                          <p className="mt-4 text-xs text-dim">รายการค่าแนะนำของ {m.name}</p>
+                          {mine.length === 0 ? (
+                            <p className="mt-1 text-sm text-dim">ยังไม่มีรายการ</p>
+                          ) : (
+                            <table className="mt-2 w-full text-left text-sm">
+                              <tbody>
+                                {mine.map((c) => (
+                                  <tr key={c.id} className="border-t border-line">
+                                    <td className="py-2 text-dim">{thaiDate(c.createdAt)}</td>
+                                    <td className="py-2 text-paper">จาก {c.sourceName}</td>
+                                    <td className="py-2 text-dim">ชั้น {c.level} ({c.percent}%)</td>
+                                    <td className="py-2 text-right font-mono text-paper">{baht(c.amountSatang)}</td>
+                                    <td className="py-2 pl-4">
+                                      {c.status === "paid" ? (
+                                        <span className="text-xs text-mint">จ่ายแล้ว</span>
+                                      ) : (
+                                        <button
+                                          disabled={!!busy}
+                                          onClick={() => act("/api/admin/commissions", { id: c.id }, `ทำเครื่องหมายว่าโอน ${baht(c.amountSatang)} ให้ ${m.name} แล้ว?`)}
+                                          className="rounded-md border border-cyan/40 px-3 py-1 text-xs text-cyan disabled:opacity-40"
+                                        >
+                                          ทำเครื่องหมายจ่ายแล้ว
+                                        </button>
+                                      )}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                    </Fragment>
+                    );
+                  })}
                 </tbody>
               </table>
               {members.length === 0 && <p className="py-4 text-sm text-dim">ไม่พบสมาชิก</p>}
@@ -320,6 +404,7 @@ export default function AdminPanel() {
 
 function SettingsForm({ initial, onSaved }: { initial: PaymentSettings; onSaved: () => void }) {
   const [f, setF] = useState({
+    firstPriceBaht: String(initial.firstPriceSatang / 100),
     priceBaht: String(initial.priceSatang / 100),
     bankName: initial.bankName,
     accountNumber: initial.accountNumber,
@@ -356,12 +441,21 @@ function SettingsForm({ initial, onSaved }: { initial: PaymentSettings; onSaved:
 
   return (
     <form onSubmit={submit} className="mt-6 grid max-w-2xl gap-5 rounded-xl border border-line bg-panel p-6">
-      <div>
-        <label className="mb-2 block text-xs text-dim">ยอดเงินรายเดือนที่สมาชิกต้องชำระ (บาท)</label>
-        <input required type="number" min="1" step="0.01" className={`${inputCls} font-mono`} value={f.priceBaht}
-          onChange={(e) => setF({ ...f, priceBaht: e.target.value })} />
-        <p className="mt-1.5 text-xs text-dim">ค่าแนะนำ 3 ชั้นจะคำนวณจากยอดนี้ (มีผลกับการอนุมัติครั้งถัดไป)</p>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="mb-2 block text-xs text-dim">ค่าสมาชิกครั้งแรก (บาท)</label>
+          <input required type="number" min="1" step="0.01" className={`${inputCls} font-mono`} value={f.firstPriceBaht}
+            onChange={(e) => setF({ ...f, firstPriceBaht: e.target.value })} />
+          <p className="mt-1.5 text-xs text-dim">จ่ายครั้งเดียวตอนเปิดใช้งานครั้งแรก — ค่าแนะนำ 3 ชั้นคิดจากยอดนี้ (มีผลกับการอนุมัติครั้งถัดไป)</p>
+        </div>
+        <div>
+          <label className="mb-2 block text-xs text-dim">ค่าสมาชิกรายเดือน (บาท)</label>
+          <input required type="number" min="1" step="0.01" className={`${inputCls} font-mono`} value={f.priceBaht}
+            onChange={(e) => setF({ ...f, priceBaht: e.target.value })} />
+          <p className="mt-1.5 text-xs text-dim">ใช้ตอนต่ออายุทุก 30 วัน (ไม่มีค่าแนะนำ)</p>
+        </div>
       </div>
+      <p className="-mt-2 text-xs text-dim">ทั้งสองยอดแสดงให้สมาชิกเห็นในแดชบอร์ดและหน้าแพ็กเกจทันทีที่บันทึก</p>
       <p className="text-sm font-medium text-paper">บัญชีกลางสำหรับให้สมาชิกโอนเงิน</p>
       <div className="grid gap-5 sm:grid-cols-3">
         <div>

@@ -13,14 +13,16 @@ export async function POST(request: Request) {
 
   const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
   const priceBaht = Number(body.priceBaht);
-  if (!Number.isFinite(priceBaht) || priceBaht <= 0 || priceBaht > 1_000_000) {
-    return fail("ยอดเงินรายเดือนไม่ถูกต้อง");
-  }
+  const firstPriceBaht = Number(body.firstPriceBaht);
+  const okPrice = (n: number) => Number.isFinite(n) && n > 0 && n <= 1_000_000;
+  if (!okPrice(firstPriceBaht)) return fail("ค่าสมาชิกครั้งแรกไม่ถูกต้อง");
+  if (!okPrice(priceBaht)) return fail("ยอดเงินรายเดือนไม่ถูกต้อง");
   const accountNumber = String(body.accountNumber ?? "").replace(/[\s-]/g, "");
   if (accountNumber && !/^\d{10,15}$/.test(accountNumber)) return fail("เลขบัญชีต้องเป็นตัวเลข 10-15 หลัก");
 
   try {
     await savePaymentSettings({
+      firstPriceSatang: Math.round(firstPriceBaht * 100),
       priceSatang: Math.round(priceBaht * 100),
       bankName: String(body.bankName ?? "").trim().slice(0, 60),
       accountNumber,

@@ -95,8 +95,19 @@ export default function Dashboard() {
 
         {/* ชำระค่าบริการรายเดือน */}
         <div className={`${card} mt-10 border-cyan/30`}>
-          <p className="text-sm font-medium text-paper">ชำระค่าบริการรายเดือน</p>
-          <p className="mt-2 font-mono text-3xl text-paper">{baht(payment.priceSatang)} <span className="text-sm text-dim">/ เดือน</span></p>
+          <p className="text-sm font-medium text-paper">ค่าบริการ</p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div className={`rounded-lg border p-4 ${approved.length === 0 ? "border-cyan/40 bg-panel2" : "border-line bg-panel2"}`}>
+              <p className="text-xs text-dim">ค่าสมาชิกครั้งแรก {approved.length === 0 && <span className="text-cyan">· ที่คุณต้องชำระ</span>}</p>
+              <p className="mt-1 font-mono text-2xl text-paper">{baht(payment.firstPriceSatang)}</p>
+              <p className="text-xs text-dim">จ่ายครั้งเดียวตอนเปิดใช้งานครั้งแรก</p>
+            </div>
+            <div className={`rounded-lg border p-4 ${approved.length > 0 ? "border-cyan/40 bg-panel2" : "border-line bg-panel2"}`}>
+              <p className="text-xs text-dim">ค่าสมาชิกรายเดือน {approved.length > 0 && <span className="text-cyan">· ที่คุณต้องชำระ</span>}</p>
+              <p className="mt-1 font-mono text-2xl text-paper">{baht(payment.priceSatang)} <span className="text-sm text-dim">/ เดือน</span></p>
+              <p className="text-xs text-dim">ต่ออายุทุก 30 วัน</p>
+            </div>
+          </div>
           {payment.accountNumber ? (
             <div className="mt-4 rounded-lg border border-line bg-panel2 p-4 text-sm">
               <p className="text-xs text-dim">โอนเงินมาที่บัญชีนี้ แล้วแจ้งสลิปกับแอดมิน</p>
@@ -166,7 +177,7 @@ export default function Dashboard() {
         {/* โครงสร้าง 3 ชั้น */}
         <div className={`${card} mt-4`}>
           <p className="text-sm font-medium text-paper">
-            ค่าแนะนำ {data.rules.poolPercent}% ของราคา EA {baht(data.rules.priceSatang)} จ่ายสามชั้น
+            ค่าแนะนำ {data.rules.poolPercent}% ของค่าสมาชิกครั้งแรก {baht(data.rules.priceSatang)} จ่ายสามชั้น
           </p>
           <div className="mt-5 grid gap-4 sm:grid-cols-3">
             {data.rules.levels.map((l) => {

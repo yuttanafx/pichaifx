@@ -21,8 +21,11 @@ const SETTINGS_DOC = "settings";
 export async function getPaymentSettings(): Promise<PaymentSettings> {
   const snap = await getDb().collection(SETTINGS_DOC).doc("payment").get();
   const d = (snap.exists ? snap.data() : {}) as Partial<PaymentSettings>;
+  const valid = (n: unknown) => Number.isInteger(n) && (n as number) > 0;
+  const monthly = valid(d.priceSatang) ? d.priceSatang! : PRICE_SATANG;
   return {
-    priceSatang: Number.isInteger(d.priceSatang) && d.priceSatang! > 0 ? d.priceSatang! : PRICE_SATANG,
+    priceSatang: monthly,
+    firstPriceSatang: valid(d.firstPriceSatang) ? d.firstPriceSatang! : monthly,
     bankName: d.bankName ?? "",
     accountNumber: d.accountNumber ?? "",
     accountName: d.accountName ?? "",
@@ -246,7 +249,7 @@ export async function rejectActivation(id: string) {
  */
 export async function approveActivation(id: string) {
   const db = getDb();
-  const price = (await getPaymentSettings()).priceSatang; // ค่าแนะนำคิดจากยอดที่แอดมินตั้งไว้
+  const price = (await getPaymentSettings()).firstPriceSatang; // ค่าแนะนำคิดจากค่าสมาชิกครั้งแรก
   return db.runTransaction(async (tx) => {
     const actRef = db.collection(C.activations).doc(id);
     const actSnap = await tx.get(actRef);
@@ -329,7 +332,7 @@ export async function listCommissionsOf(userId: string) {
   return snap.docs.map((d) => d.data() as Commission).sort(byNewest);
 }
 
-export async function listAllCommissions(limit = 300) {
+export async function listAllCommissions(limit = 5000) {
   const snap = await getDb()
     .collection(C.commissions)
     .orderBy("createdAt", "desc")
