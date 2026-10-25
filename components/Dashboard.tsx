@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { DashboardData } from "@/lib/types";
+import BankForm from "@/components/BankForm";
 import { baht, thaiDate } from "@/lib/format";
 
 const statusLabel: Record<string, { text: string; cls: string }> = {
@@ -67,6 +68,9 @@ export default function Dashboard() {
   };
 
   const card = "rounded-xl border border-line bg-panel p-6";
+  const payment = data.payment;
+  const approved = data.activations.filter((a) => a.status === "approved" && a.expiresAt);
+  const dLeft = (iso: string) => Math.ceil((new Date(iso).getTime() - Date.now()) / 86400_000);
 
   return (
     <section className="py-14">
@@ -89,8 +93,40 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* ชำระค่าบริการรายเดือน */}
+        <div className={`${card} mt-10 border-cyan/30`}>
+          <p className="text-sm font-medium text-paper">ชำระค่าบริการรายเดือน</p>
+          <p className="mt-2 font-mono text-3xl text-paper">{baht(payment.priceSatang)} <span className="text-sm text-dim">/ เดือน</span></p>
+          {payment.accountNumber ? (
+            <div className="mt-4 rounded-lg border border-line bg-panel2 p-4 text-sm">
+              <p className="text-xs text-dim">โอนเงินมาที่บัญชีนี้ แล้วแจ้งสลิปกับแอดมิน</p>
+              <p className="mt-2 text-paper">{payment.bankName}</p>
+              <p className="font-mono text-lg text-cyan">{payment.accountNumber}</p>
+              <p className="text-paper">ชื่อบัญชี: {payment.accountName}</p>
+              {payment.note && <p className="mt-2 text-xs text-dim">{payment.note}</p>}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-dim">แอดมินยังไม่ได้ตั้งค่าบัญชีรับโอน กรุณาติดต่อแอดมิน</p>
+          )}
+          {approved.length > 0 && (
+            <ul className="mt-4 space-y-1 text-sm">
+              {approved.map((a) => {
+                const d = dLeft(a.expiresAt!);
+                return (
+                  <li key={a.id} className="flex flex-wrap justify-between gap-2">
+                    <span className="text-dim">{a.broker} · <span className="font-mono text-paper">{a.accountNumber}</span></span>
+                    <span className={d < 0 ? "text-rose" : d <= 2 ? "text-amber-400" : "text-mint"}>
+                      {d < 0 ? `หมดอายุแล้ว ${-d} วัน` : d === 0 ? "หมดอายุวันนี้" : `เหลือ ${d} วัน`} (หมด {thaiDate(a.expiresAt!)})
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+
         {/* สรุปรายได้ */}
-        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
           <div className={`${card} border-cyan/30 shadow-glow`}>
             <p className="text-xs text-dim">รายได้ค่าแนะนำสะสมทั้งหมด</p>
             <p className="mt-2 font-mono text-3xl text-paper">{baht(data.totals.earnedSatang)}</p>
@@ -103,6 +139,13 @@ export default function Dashboard() {
             <p className="text-xs text-dim">จ่ายแล้ว</p>
             <p className="mt-2 font-mono text-2xl text-mint">{baht(data.totals.paidSatang)}</p>
           </div>
+        </div>
+
+        {/* บัญชีธนาคารรับค่าแนะนำ */}
+        <div className={`${card} mt-4`}>
+          <p className="text-sm font-medium text-paper">บัญชีธนาคารสำหรับรับค่าแนะนำ</p>
+          <p className="mt-1 text-xs text-dim">ชื่อบัญชีต้องตรงกับชื่อสมาชิก ({data.user.name}) แอดมินจะโอนค่าแนะนำเข้าบัญชีนี้</p>
+          <BankForm initial={data.bank} onSaved={load} />
         </div>
 
         {/* ลิงก์แนะนำ */}

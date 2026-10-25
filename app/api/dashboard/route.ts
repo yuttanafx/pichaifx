@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getSessionUser, isAdminEmail } from "@/lib/auth";
 import {
   getDownlineCounts,
+  expiryOf,
+  getPaymentSettings,
   getUsersByIds,
   listActivationsOf,
   listCommissionsOf,
@@ -9,7 +11,6 @@ import {
 import {
   COMMISSION_POOL_PERCENT,
   LEVEL_PERCENTS,
-  PRICE_SATANG,
   levelAmountsSatang,
 } from "@/lib/commission";
 import type { DashboardData } from "@/lib/types";
@@ -29,6 +30,7 @@ export async function GET() {
 
   try {
     const counts = await getDownlineCounts(user.id);
+    const payment = await getPaymentSettings();
 
     const [commissions, activations] = await Promise.all([
       listCommissionsOf(user.id),
@@ -36,7 +38,7 @@ export async function GET() {
     ]);
     const sources = await getUsersByIds(commissions.map((c) => c.sourceUserId));
 
-    const amounts = levelAmountsSatang();
+    const amounts = levelAmountsSatang(payment.priceSatang);
     const sumBy = (f: (c: (typeof commissions)[number]) => boolean) =>
       commissions.filter(f).reduce((a, c) => a + c.amountSatang, 0);
 
@@ -47,8 +49,10 @@ export async function GET() {
         refCode: user.refCode,
         isAdmin: isAdminEmail(user.email),
       },
+      payment,
+      bank: user.bank ?? null,
       rules: {
-        priceSatang: PRICE_SATANG,
+        priceSatang: payment.priceSatang,
         poolPercent: COMMISSION_POOL_PERCENT,
         levels: LEVEL_PERCENTS.map((percent, i) => ({
           level: i + 1,
@@ -82,6 +86,7 @@ export async function GET() {
         accountNumber: a.accountNumber,
         status: a.status,
         createdAt: a.createdAt,
+        expiresAt: a.status === "approved" ? expiryOf(a) : undefined,
       })),
     };
     return NextResponse.json({ ok: true, data });

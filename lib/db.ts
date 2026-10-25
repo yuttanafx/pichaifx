@@ -1,7 +1,8 @@
 import crypto from "crypto";
+import { FieldValue } from "firebase-admin/firestore";
 import { getDb } from "./firebase";
-import { LEVEL_PERCENTS, levelAmountsSatang } from "./commission";
-import type { Activation, Commission, PublicUser } from "./types";
+import { LEVEL_PERCENTS, PRICE_SATANG, levelAmountsSatang } from "./commission";
+import type { Activation, BankAccount, Commission, PaymentSettings, PublicUser } from "./types";
 
 /**
  * โครงสร้าง Firestore (ไม่ต้องสร้าง index เพิ่ม — ทุก query ใช้ index อัตโนมัติ)
@@ -15,6 +16,35 @@ import type { Activation, Commission, PublicUser } from "./types";
  */
 
 type StoredUser = PublicUser & { passwordHash: string };
+
+const SETTINGS_DOC = "settings";
+export async function getPaymentSettings(): Promise<PaymentSettings> {
+  const snap = await getDb().collection(SETTINGS_DOC).doc("payment").get();
+  const d = (snap.exists ? snap.data() : {}) as Partial<PaymentSettings>;
+  return {
+    priceSatang: Number.isInteger(d.priceSatang) && d.priceSatang! > 0 ? d.priceSatang! : PRICE_SATANG,
+    bankName: d.bankName ?? "",
+    accountNumber: d.accountNumber ?? "",
+    accountName: d.accountName ?? "",
+    note: d.note ?? "",
+  };
+}
+
+export async function savePaymentSettings(s: PaymentSettings) {
+  await getDb().collection(SETTINGS_DOC).doc("payment").set(s);
+}
+
+export async function setUserBank(userId: string, bank: BankAccount) {
+  await getDb().collection(C.users).doc(userId).update({ bank });
+}
+
+export const SUBSCRIPTION_DAYS = 30;
+const DAY_MS = 86400_000;
+/** วันหมดอายุของรายการ (รายการเก่าที่ยังไม่มี expiresAt ให้นับจากวันอนุมัติ +30 วัน) */
+export function expiryOf(a: Pick<Activation, "expiresAt" | "reviewedAt" | "createdAt">) {
+  if (a.expiresAt) return a.expiresAt;
+  return new Date(new Date(a.reviewedAt ?? a.createdAt).getTime() + SUBSCRIPTION_DAYS * DAY_MS).toISOString();
+}
 
 const sha = (s: string) => crypto.createHash("sha256").update(s).digest("hex");
 const toPublic = ({ passwordHash: _p, ...u }: StoredUser): PublicUser => u;
@@ -186,7 +216,7 @@ export async function listActivationsOf(userId: string, limit = 50) {
   return snap.docs.map((d) => d.data() as Activation).sort(byNewest).slice(0, limit);
 }
 
-export async function listAllActivations(limit = 200) {
+export async function listAllActivations(limit = 1000) {
   const snap = await getDb()
     .collection(C.activations)
     .orderBy("createdAt", "desc")
@@ -216,6 +246,7 @@ export async function rejectActivation(id: string) {
  */
 export async function approveActivation(id: string) {
   const db = getDb();
+  const price = (await getPaymentSettings()).priceSatang; // ค่าแนะนำคิดจากยอดที่แอดมินตั้งไว้
   return db.runTransaction(async (tx) => {
     const actRef = db.collection(C.activations).doc(id);
     const actSnap = await tx.get(actRef);
@@ -238,7 +269,7 @@ export async function approveActivation(id: string) {
     }
 
     const now = new Date().toISOString();
-    const amounts = levelAmountsSatang();
+    const amounts = levelAmountsSatang(price);
     const commissions: Commission[] = chain.map((beneficiary, i) => ({
       id: crypto.randomUUID(),
       activationId: id,
@@ -251,11 +282,42 @@ export async function approveActivation(id: string) {
       createdAt: now,
     }));
 
-    const updated: Activation = { ...act, status: "approved", reviewedAt: now };
+    const expiresAt = new Date(Date.now() + SUBSCRIPTION_DAYS * DAY_MS).toISOString();
+    const updated: Activation = { ...act, status: "approved", reviewedAt: now, expiresAt };
     tx.set(actRef, updated);
     for (const c of commissions) tx.set(db.collection(C.commissions).doc(c.id), c);
     return { activation: updated, commissions };
   });
+}
+
+/** ต่ออายุรายเดือน +30 วัน (นับต่อจากวันหมดอายุเดิม ถ้ายังไม่หมด) — ไม่สร้างค่าแนะนำ */
+export async function renewActivation(id: string) {
+  const db = getDb();
+  return db.runTransaction(async (tx) => {
+    const ref = db.collection(C.activations).doc(id);
+    const snap = await tx.get(ref);
+    if (!snap.exists) return null;
+    const act = snap.data() as Activation;
+    if (act.status !== "approved") return null;
+    const base = Math.max(Date.now(), new Date(expiryOf(act)).getTime());
+    const expiresAt = new Date(base + SUBSCRIPTION_DAYS * DAY_MS).toISOString();
+    tx.update(ref, { expiresAt, reminderSentFor: FieldValue.delete() });
+    return { ...act, expiresAt };
+  });
+}
+
+export async function listApprovedActivations() {
+  const snap = await getDb().collection(C.activations).where("status", "==", "approved").get();
+  return snap.docs.map((d) => d.data() as Activation);
+}
+
+export async function markReminderSent(id: string, expiry: string) {
+  await getDb().collection(C.activations).doc(id).update({ reminderSentFor: expiry });
+}
+
+export async function listAllUsers(limit = 1000) {
+  const snap = await getDb().collection(C.users).orderBy("createdAt", "desc").limit(limit).get();
+  return snap.docs.map((d) => toPublic(d.data() as StoredUser));
 }
 
 // ---------- ค่าแนะนำ ----------

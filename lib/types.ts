@@ -1,7 +1,23 @@
 export type ActivationStatus = "pending" | "approved" | "rejected";
 export type CommissionStatus = "pending" | "paid";
 
+export type BankAccount = {
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+};
+
+/** ตั้งค่าการชำระเงินโดยแอดมิน: ยอดรายเดือน + บัญชีกลางให้สมาชิกโอนเงิน */
+export type PaymentSettings = {
+  priceSatang: number;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+  note: string;
+};
+
 export type PublicUser = {
+  bank?: BankAccount;
   id: string;
   email: string;
   name: string;
@@ -22,6 +38,10 @@ export type Activation = {
   status: ActivationStatus;
   createdAt: string;
   reviewedAt?: string;
+  /** วันหมดอายุรายเดือน (ตั้งตอนอนุมัติ +30 วัน, ต่ออายุได้) */
+  expiresAt?: string;
+  /** วันหมดอายุที่ส่งแจ้งเตือนไปแล้ว (กันส่งซ้ำ) */
+  reminderSentFor?: string;
 };
 
 export type Commission = {
@@ -39,6 +59,8 @@ export type Commission = {
 
 export type DashboardData = {
   user: { name: string; email: string; refCode: string; isAdmin: boolean };
+  payment: PaymentSettings;
+  bank: BankAccount | null;
   rules: {
     priceSatang: number;
     poolPercent: number;
@@ -63,11 +85,31 @@ export type DashboardData = {
   }[];
   activations: Pick<
     Activation,
-    "id" | "broker" | "accountNumber" | "status" | "createdAt"
+    "id" | "broker" | "accountNumber" | "status" | "createdAt" | "expiresAt"
   >[];
 };
 
+export type AdminMember = {
+  id: string;
+  name: string;
+  email: string;
+  refCode: string;
+  referrerName: string;
+  createdAt: string;
+  isAdmin: boolean;
+  bank: BankAccount | null;
+  accounts: {
+    activationId: string;
+    broker: string;
+    accountNumber: string;
+    status: ActivationStatus;
+    expiresAt?: string;
+  }[];
+};
+
 export type AdminOverview = {
+  settings: PaymentSettings;
+  members: AdminMember[];
   activations: (Activation & {
     userEmail: string;
     upline: { level: number; name: string; email: string; amountSatang: number }[];
@@ -76,5 +118,6 @@ export type AdminOverview = {
     beneficiaryName: string;
     beneficiaryEmail: string;
     sourceName: string;
+    beneficiaryBank: BankAccount | null;
   })[];
 };
