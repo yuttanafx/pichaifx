@@ -123,6 +123,12 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
             </p>
           )}
 
+          {!isRegister && (
+            <p className="-mt-2 text-right text-xs">
+              <a href="/forgot-password" className="text-cyan">ลืมรหัสผ่าน?</a>
+            </p>
+          )}
+
           <button type="submit" disabled={busy}
             className="rounded-md bg-cyan py-3.5 text-sm font-medium text-ink transition-transform enabled:hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-40">
             {busy ? "กำลังดำเนินการ..." : isRegister ? "สมัครสมาชิก" : "เข้าสู่ระบบ"}

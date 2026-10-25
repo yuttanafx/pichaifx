@@ -99,6 +99,15 @@ export async function createUser(input: {
   return user ? toPublic(user) : null;
 }
 
+export async function getStoredUserById(id: string): Promise<StoredUser | null> {
+  const snap = await getDb().collection(C.users).doc(id).get();
+  return snap.exists ? (snap.data() as StoredUser) : null;
+}
+
+export async function updatePasswordHash(userId: string, passwordHash: string) {
+  await getDb().collection(C.users).doc(userId).update({ passwordHash });
+}
+
 /** สายแนะนำขึ้นไปสูงสุด n ชั้น (ชั้น 1 = ผู้แนะนำโดยตรง) */
 export async function getUplineChain(userId: string, depth = LEVEL_PERCENTS.length) {
   const chain: PublicUser[] = [];
