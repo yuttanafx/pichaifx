@@ -1,11 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/language-context";
 
+const gateText = {
+  th: {
+    title: "เข้าสู่ระบบก่อนแจ้งเปิดใช้งาน EA",
+    body: "สมัครสมาชิกฟรีเพื่อแจ้งเปิดใช้งาน EA ติดตามสถานะ และรับลิงก์แนะนำเพื่อสร้างรายได้ค่าแนะนำ 3 ชั้น",
+    login: "เข้าสู่ระบบ",
+    register: "สมัครสมาชิก",
+    dashboard: "ดูสถานะในแดชบอร์ด",
+    loading: "กำลังโหลด...",
+  },
+  en: {
+    title: "Log in before requesting EA activation",
+    body: "Create a free account to request EA activation, track its status and get your referral link for 3-level commissions.",
+    login: "Log in",
+    register: "Sign up",
+    dashboard: "View status in dashboard",
+    loading: "Loading...",
+  },
+  zh: {
+    title: "请先登录再申请开通 EA",
+    body: "免费注册账号即可申请开通 EA、查看进度，并获得三级推荐佣金的推荐链接。",
+    login: "登录",
+    register: "注册",
+    dashboard: "在仪表板查看状态",
+    loading: "加载中...",
+  },
+} as const;
+
 export default function ConnectAccount() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const d = t.connectAccount;
+  const g = gateText[locale];
+  const [member, setMember] = useState<"loading" | "out" | { name: string }>("loading");
   const [status, setStatus] = useState<"idle" | "loading" | "submitted" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [form, setForm] = useState({
@@ -17,6 +46,25 @@ export default function ConnectAccount() {
     note: "",
     pdpaConsent: false,
   });
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((j) => {
+        if (!alive) return;
+        if (j.user) {
+          setMember({ name: j.user.name });
+          setForm((f) => (f.name ? f : { ...f, name: j.user.name }));
+        } else {
+          setMember("out");
+        }
+      })
+      .catch(() => alive && setMember("out"));
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const update = (key: keyof typeof form, value: string | boolean) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -37,7 +85,7 @@ export default function ConnectAccount() {
     setErrorMessage("");
 
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("/api/activations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -45,6 +93,7 @@ export default function ConnectAccount() {
 
       const data = await res.json();
 
+      if (res.status === 401) setMember("out");
       if (!res.ok || !data.ok) {
         setStatus("error");
         setErrorMessage(data.error || d.labels.genericError);
@@ -83,7 +132,22 @@ export default function ConnectAccount() {
           </div>
 
           <div className="rounded-xl border border-line bg-panel p-6 sm:p-8">
-            {status === "submitted" ? (
+            {member === "loading" ? (
+              <p className="py-10 text-sm text-dim">{g.loading}</p>
+            ) : member === "out" ? (
+              <div className="flex flex-col items-start gap-4 py-4">
+                <h3 className="font-display text-lg font-semibold text-paper">{g.title}</h3>
+                <p className="text-sm leading-relaxed text-dim">{g.body}</p>
+                <div className="mt-2 flex flex-wrap gap-3">
+                  <a href="/register" className="rounded-md bg-cyan px-5 py-3 text-sm font-medium text-ink">
+                    {g.register}
+                  </a>
+                  <a href="/login" className="rounded-md border border-line px-5 py-3 text-sm font-medium text-paper hover:border-cyan/40">
+                    {g.login}
+                  </a>
+                </div>
+              </div>
+            ) : status === "submitted" ? (
               <div className="flex flex-col items-start gap-4 py-6">
                 <span className="grid h-10 w-10 place-items-center rounded-full border border-mint/40 text-mint">
                   ✓
@@ -92,12 +156,15 @@ export default function ConnectAccount() {
                   {d.successTitle}
                 </h3>
                 <p className="text-sm leading-relaxed text-dim">{d.successBody}</p>
+                <a href="/dashboard" className="text-sm text-cyan underline underline-offset-2">
+                  {g.dashboard}
+                </a>
                 <button
                   type="button"
                   onClick={() => {
                     setStatus("idle");
                     setForm({
-                      name: "",
+                      name: typeof member === "object" ? member.name : "",
                       contact: "",
                       broker: "",
                       accountNumber: "",

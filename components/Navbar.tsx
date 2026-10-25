@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLanguage } from "@/lib/language-context";
@@ -9,6 +10,23 @@ export default function Navbar() {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const pathname = usePathname();
+  // ลิงก์ #section ต้องพากลับไปหน้าแรกเมื่ออยู่หน้าอื่น (เช่น /dashboard)
+  const href = (h: string) => (pathname === "/" || !h.startsWith("#") ? h : `/${h}`);
+  const accountHref = loggedIn ? "/dashboard" : "/login";
+  const accountLabel = loggedIn ? "แดชบอร์ด" : t.nav.login;
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((j) => alive && setLoggedIn(!!j.user))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -24,7 +42,7 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="#top" className="flex items-center gap-2.5">
+        <a href="/" className="flex items-center gap-2.5">
           <span className="grid h-8 w-8 place-items-center rounded-md border border-cyan/30 bg-panel">
             <span className="h-2.5 w-2.5 rounded-sm bg-cyan" />
           </span>
@@ -37,7 +55,7 @@ export default function Navbar() {
           {t.nav.links.map((l) => (
             <a
               key={l.href}
-              href={l.href}
+              href={href(l.href)}
               className="text-sm text-dim transition-colors hover:text-paper"
             >
               {l.label}
@@ -49,13 +67,13 @@ export default function Navbar() {
           <LanguageSwitcher />
           <ThemeToggle />
           <a
-            href="#connect-account"
+            href={accountHref}
             className="text-sm text-dim transition-colors hover:text-paper"
           >
-            {t.nav.login}
+            {accountLabel}
           </a>
           <a
-            href="#pricing"
+            href={href("#pricing")}
             className="rounded-md bg-cyan px-4 py-2 text-sm font-medium text-ink transition-transform hover:scale-[1.03]"
           >
             {t.nav.start}
@@ -86,7 +104,7 @@ export default function Navbar() {
             {t.nav.links.map((l) => (
               <a
                 key={l.href}
-                href={l.href}
+                href={href(l.href)}
                 onClick={() => setOpen(false)}
                 className="rounded-md px-2 py-3 text-sm text-dim hover:bg-panel hover:text-paper"
               >
@@ -94,7 +112,14 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="#pricing"
+              href={accountHref}
+              onClick={() => setOpen(false)}
+              className="rounded-md px-2 py-3 text-sm text-dim hover:bg-panel hover:text-paper"
+            >
+              {accountLabel}
+            </a>
+            <a
+              href={href("#pricing")}
               onClick={() => setOpen(false)}
               className="mt-2 rounded-md bg-cyan px-4 py-3 text-center text-sm font-medium text-ink"
             >

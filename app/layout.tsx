@@ -5,6 +5,7 @@ import CandlestickBackground from "@/components/CandlestickBackground";
 import RobotTrader from "@/components/RobotTrader";
 import VisitorCounter from "@/components/VisitorCounter";
 import CookieConsent from "@/components/CookieConsent";
+import RefCapture from "@/components/RefCapture";
 import { LanguageProvider } from "@/lib/language-context";
 
 // Runs before React hydrates so the site never flashes the wrong theme.
@@ -69,6 +70,7 @@ export default function RootLayout({
           <RobotTrader />
           <VisitorCounter />
           <CookieConsent />
+          <RefCapture />
         </LanguageProvider>
       </body>
     </html>
