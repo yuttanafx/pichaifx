@@ -1,0 +1,10 @@
+rules_version = '2';
+// ปิดทั้งหมด: เบราว์เซอร์เข้า Firestore ตรงไม่ได้เลย
+// ระบบอ่าน/เขียนผ่านเซิร์ฟเวอร์ด้วย Admin SDK ซึ่งไม่ผ่านกฎนี้
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

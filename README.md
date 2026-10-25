@@ -60,13 +60,22 @@ npm run start
 3. แอดมินตรวจว่าได้รับเงิน 1,990 บาทแล้วกด "อนุมัติ" -> ระบบสร้างค่าแนะนำให้สายบน 3 ชั้นอัตโนมัติ (ถ้าสายสั้นกว่า 3 ชั้น ส่วนที่ไม่มีคนรับไม่ถูกจ่ายใคร)
 4. แอดมินโอนเงินแล้วกด "ทำเครื่องหมายจ่ายแล้ว" -> สมาชิกเห็นสถานะ "จ่ายแล้ว" ในแดชบอร์ด
 
-**ตั้งค่า (.env.local)** — ดู `.env.example`
-- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` (ใช้ตัวเดียวกับตัวนับผู้เข้าชม — ข้อมูลสมาชิกเก็บที่นี่)
+**ที่เก็บข้อมูล: Firebase Firestore** (ฝั่งเซิร์ฟเวอร์ผ่าน Admin SDK ใน `lib/db.ts` และ `lib/firebase.ts`)
+คอลเลกชัน: `users`, `emails`, `refCodes`, `activations`, `accountLocks`, `commissions`, `rateLimits`
+— ไม่ต้องสร้าง index เพิ่ม ส่วนตัวนับผู้เข้าชมยังใช้ Upstash เหมือนเดิม
+
+**ตั้งค่า Firebase**
+1. Firebase Console > Build > Firestore Database > Create database (โหมด production)
+2. แท็บ Rules วางเนื้อหาจากไฟล์ `firestore.rules` (ปิดการเข้าถึงจากเบราว์เซอร์ทั้งหมด) แล้ว Publish
+3. Project Settings > Service accounts > Generate new private key ได้ไฟล์ JSON
+4. ใส่ค่าลง Environment Variables: `FIREBASE_PROJECT_ID` (project_id), `FIREBASE_CLIENT_EMAIL` (client_email), `FIREBASE_PRIVATE_KEY` (private_key)
+
+**ตั้งค่าอื่น (.env.local / Vercel)** — ดู `.env.example`
 - `SESSION_SECRET` สตริงสุ่มยาว ๆ (`openssl rand -base64 32`)
 - `ADMIN_EMAILS` อีเมลแอดมิน สมัครสมาชิกด้วยอีเมลนี้ก่อน แล้วจะเห็นปุ่ม "จัดการระบบ"
 
 **ความปลอดภัยที่ใส่ไว้แล้ว**: รหัสผ่านแฮชด้วย scrypt, คุกกี้ล็อกอิน httpOnly ลงลายเซ็น HMAC, จำกัดลองรหัสผ่าน 8 ครั้ง/15 นาที,
-บัญชีเทรดหนึ่งบัญชีแจ้งได้ครั้งเดียว (กันรับค่าแนะนำซ้ำ), อนุมัติซ้ำไม่ได้ (lock), ชื่อลูกข่ายในแดชบอร์ดถูกซ่อน (`สม***`)
+บัญชีเทรดหนึ่งบัญชีแจ้งได้ครั้งเดียว (กันรับค่าแนะนำซ้ำ), อนุมัติซ้ำไม่ได้ (Firestore transaction), ชื่อลูกข่ายในแดชบอร์ดถูกซ่อน (`สม***`)
 
 > **ก่อนเปิดใช้งานจริง:** ควรอัปเดตนโยบายความเป็นส่วนตัว/ข้อตกลงให้ครอบคลุมการเก็บข้อมูลสมาชิกและโปรแกรมค่าแนะนำ
 > และปรึกษานักกฎหมายเรื่องกฎหมายขายตรงฯ / การห้ามแชร์ลูกโซ่ (ค่าแนะนำต้องมาจากการขายสินค้า/บริการจริง ไม่ใช่การหาสมาชิก)

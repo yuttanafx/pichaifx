@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { getSessionUser, isAdminEmail } from "@/lib/auth";
 import {
-  getDownlineIds,
-  keys,
+  getDownlineCounts,
   getUsersByIds,
   listActivationsOf,
   listCommissionsOf,
 } from "@/lib/db";
-import { pipeline } from "@/lib/redis";
 import {
   COMMISSION_POOL_PERCENT,
   LEVEL_PERCENTS,
@@ -25,21 +23,12 @@ function maskName(name: string) {
   return `${chars.slice(0, 2).join("")}***`;
 }
 
-async function nextLevel(ids: string[]) {
-  if (ids.length === 0) return [];
-  const res = (await pipeline(ids.map((id) => ["SMEMBERS", keys.down(id)]))) as string[][];
-  return res.flat();
-}
-
 export async function GET() {
   const user = await getSessionUser().catch(() => null);
   if (!user) return NextResponse.json({ ok: false, error: "กรุณาเข้าสู่ระบบ" }, { status: 401 });
 
   try {
-    const l1 = await getDownlineIds(user.id);
-    const l2 = await nextLevel(l1);
-    const l3 = await nextLevel(l2);
-    const counts = [l1.length, l2.length, l3.length];
+    const counts = await getDownlineCounts(user.id);
 
     const [commissions, activations] = await Promise.all([
       listCommissionsOf(user.id),

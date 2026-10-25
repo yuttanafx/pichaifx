@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { clientIp, setSessionCookie, verifyPassword } from "@/lib/auth";
-import { getUserByEmail } from "@/lib/db";
-import { cmd } from "@/lib/redis";
+import { clearLoginLimit, getUserByEmail, hitLoginLimit } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,15 +22,13 @@ export async function POST(request: Request) {
   try {
     // จำกัดการลองรหัสผ่าน: 8 ครั้ง / 15 นาที ต่อ (IP + อีเมล)
     const rlKey = `pfx:rl:login:${clientIp(request)}:${email}`;
-    const tries = await cmd<number>("INCR", rlKey);
-    if (tries === 1) await cmd("EXPIRE", rlKey, 900);
-    if (tries > 8) return fail("ลองเข้าสู่ระบบหลายครั้งเกินไป กรุณารอ 15 นาที", 429);
+    if (await hitLoginLimit(rlKey)) return fail("ลองเข้าสู่ระบบหลายครั้งเกินไป กรุณารอ 15 นาที", 429);
 
     const user = await getUserByEmail(email);
     const ok = user ? await verifyPassword(password, user.passwordHash) : false;
     if (!user || !ok) return fail("อีเมลหรือรหัสผ่านไม่ถูกต้อง", 401);
 
-    await cmd("DEL", rlKey);
+    await clearLoginLimit(rlKey);
     const res = NextResponse.json({ ok: true });
     setSessionCookie(res, user.id);
     return res;
