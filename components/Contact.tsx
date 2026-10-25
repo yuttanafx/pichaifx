@@ -2,6 +2,7 @@
 
 import { useLanguage } from "@/lib/language-context";
 import { LINE_OA_URL } from "@/lib/translations";
+import FacebookFeed from "@/components/FacebookFeed";
 
 export default function Contact() {
   const { t } = useLanguage();
@@ -32,6 +33,7 @@ export default function Contact() {
               </a>
             </div>
 
+            <div className="flex flex-col gap-4">
             <div className="grid gap-3 sm:grid-cols-3 lg:gap-3">
               {t.contact.channels.map((c) =>
                 c.href ? (
@@ -55,6 +57,8 @@ export default function Contact() {
                   </div>
                 )
               )}
+            </div>
+            <FacebookFeed />
             </div>
           </div>
         </div>
