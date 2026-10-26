@@ -24,7 +24,7 @@ export default function EADownload() {
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
-                  href="https://drive.google.com/file/d/1cwvthGRQLzdnKHDmgE07EmQo7ZuT56VU/view?usp=sharing"
+                  href="https://drive.google.com/file/d/15mMC5g35knOzx2znwtseBVHs3wUcbkcW/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-md bg-cyan px-6 py-3.5 text-sm font-medium text-ink transition-transform hover:scale-[1.02]"
