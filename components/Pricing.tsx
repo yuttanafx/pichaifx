@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/language-context";
 import { LINE_OA_URL } from "@/lib/translations";
 
-const BROKER_SIGNUP_URL = "http://live.oexn.global/signup/xtAKY577";
+const BROKER_SIGNUP_URL = "https://account.markets4you.online/en/user-registration/?affid=3b29oy6";
 
 const planMeta = [
   { href: BROKER_SIGNUP_URL, extraHref: LINE_OA_URL, external: true, sponsored: true, featured: false },
