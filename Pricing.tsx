@@ -2,7 +2,7 @@
 
 import { useLanguage } from "@/lib/language-context";
 
-const BROKER_SIGNUP_URL = "http://live.oexn.global/signup/xtAKY577";
+const BROKER_SIGNUP_URL = "https://dupoin.pro/i2gz3xwm0";
 
 const planMeta = [
   { href: BROKER_SIGNUP_URL, external: true, sponsored: true, featured: false },
