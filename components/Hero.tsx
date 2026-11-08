@@ -72,7 +72,7 @@ export default function Hero() {
               {t.hero.ctaPerformance}
             </a>
             <a
-              href="https://mt-5-aitegus.vercel.app"
+              href="https://telagram-ai-alpha.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-md border border-mint/50 px-6 py-3.5 text-center text-sm font-medium text-mint transition-colors hover:bg-mint/10"
